@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans&family=Inter:wght@300;400;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 11pt;
+    }
+}
+
+@layer components {
+    .f-input {
+        @apply w-full outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:border-slate-200 col-span-2 px-4 py-2 rounded border border-slate-200 active:border-slate-200;
+    }
+
+    .f-btn {
+        @apply active:ring-2 active:ring-offset-2 active:ring-slate-400 border text-slate-500 border-slate-200 hover:bg-slate-100 flex items-center gap-2 justify-center transition-all px-3 py-2 rounded active:translate-x-0.5 active:translate-y-0.5;
+    }
+
+    .f-primary {
+        @apply bg-violet-500 hover:bg-violet-400 active:ring-violet-400 text-white border-violet-200;
+    }
+
+    .f-warning {
+        @apply bg-yellow-500 hover:bg-yellow-400 active:ring-yellow-400 text-white border-orange-200;
+    }
+
+    .f-danger {
+        @apply bg-rose-500 hover:bg-rose-400 active:ring-rose-400 text-white border-red-200;
+    }
+}
