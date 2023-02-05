@@ -1,7 +1,7 @@
 import React from 'react'
 import { useLocation, Navigate } from 'react-router-dom'
 import axios from 'axios'
-import { buildURL } from '../utils'
+import httpClient from '../utils/HttpClient'
 
 interface User {
     name: string
@@ -33,12 +33,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = React.useState<any>()
 
     const signin = async (username: string, password: string, callback: VoidFunction) => {
-        const response = await axios.post<{ token: string }>(buildURL('api/login'), {
-            username,
-            password
-        })
-
-        localStorage.setItem('token', response.data.token)
+        const result = await httpClient.post<any, { token: string }>('api/login', { username, password })
+        localStorage.setItem('token', result.token)
 
         return authProvider.signin(() => {
             setUser(username)

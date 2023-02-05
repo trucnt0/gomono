@@ -8,6 +8,7 @@ import Projects from './pages/Projects'
 import Layout from './pages/Layout'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import IAM from './pages/IAM'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -21,6 +22,7 @@ function App() {
           </RequireAuth>
         }>
           <Route index element={<Projects />} />
+          <Route path='iam' element={<IAM />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

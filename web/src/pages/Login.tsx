@@ -1,10 +1,10 @@
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from './AuthProvider'
 import { FiLogIn } from 'react-icons/fi'
-import { useState } from 'react'
+import React, { FC, useState } from 'react'
 import Loader from '../components/Loader'
 
-export default () => {
+const Login: FC = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const auth = useAuth()
@@ -49,3 +49,5 @@ export default () => {
         </div>
     )
 }
+
+export default Login

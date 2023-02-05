@@ -1,36 +1,14 @@
 import { FiCheckCircle, FiEdit2, FiExternalLink, FiFilePlus, FiLock, FiSend, FiShare, FiTrash2, FiXCircle } from 'react-icons/fi'
 import DataGrid, { ColumnDef } from '../components/DataGrid'
-import { useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import Modal from '../components/Modal'
-import axios from 'axios'
-import { buildURL } from '../utils'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
+import http from '../utils/HttpClient'
+import { LeadModel, ProjectModel } from '../models'
 
-interface UserModel {
-    FirstName: string
-    LastName: string
-    ID: string
-}
-
-interface ProjectModel {
-    ID?: string
-    Name?: string
-    Description?: string
-    LeadID?: string
-    LeadName?: string
-    IsActive?: boolean
-    Lead?: UserModel
-}
-
-interface LeadModel {
-    FirstName: string
-    LastName: string
-    ID?: string
-}
-
-const Projects = () => {
-    const [isProjectOpen, setProjectOpen] = useState(false)
+const Projects: FC = () => {
+    const [isOpen, setIsOpen] = useState(false)
     const [projects, setProjects] = useState<ProjectModel[]>([])
     const [leads, setLeads] = useState<LeadModel[]>([])
     const [newProject, setNewProject] = useState<ProjectModel>()
@@ -77,36 +55,24 @@ const Projects = () => {
     }, [])
 
     async function loadProjects() {
-        const res = await axios.get(buildURL('api/projects'), {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        setProjects(res.data)
+        const projects = await http.get('api/projects')
+        setProjects(projects)
     }
 
     async function loadLeads() {
-        const res = await axios.get(buildURL('api/leads'), {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        setLeads(res.data)
+        const leads = await http.get('api/leads')
+        setLeads(leads)
     }
 
     async function createProject() {
-        const res = await axios.post(buildURL('api/projects'), newProject, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
+        await http.post('api/projects', newProject)
         toast.success('Project created')
         await loadProjects()
-        closeProjectPopup()
+        closePopup()
     }
 
-    function closeProjectPopup() {
-        setProjectOpen(false)
+    function closePopup() {
+        setIsOpen(false)
     }
 
     function handleChange(e: any) {
@@ -119,7 +85,7 @@ const Projects = () => {
     return (
         <div className='flex flex-col gap-5 items-center'>
             <div className='flex gap-2 lg:w-2/3'>
-                <button className='f-btn f-primary' onClick={() => setProjectOpen(true)}><FiFilePlus /> New Project</button>
+                <button className='f-btn f-primary' onClick={() => setIsOpen(true)}><FiFilePlus /> New Project</button>
                 <Link to='/register?from=projects' className='f-btn f-warning'><FiSend /> Create Lead</Link>
                 <button className='f-btn'><FiShare /> Share</button>
                 <button className='f-btn'><FiLock /> Lock</button>
@@ -130,7 +96,7 @@ const Projects = () => {
                 <DataGrid columns={columns} datasource={projects} />
             </div>
 
-            <Modal isOpen={isProjectOpen} onClose={closeProjectPopup} onSubmit={createProject} >
+            <Modal title='New Project' isOpen={isOpen} onClose={closePopup} onSubmit={createProject} >
                 <input name='name' onChange={handleChange} type="text" className='f-input' placeholder='Project Name' />
                 <textarea name='description' onChange={handleChange} rows={10} className='f-input' placeholder='Description' />
                 <select name='leadID' onChange={handleChange} className='f-input' id="leads">
@@ -144,5 +110,4 @@ const Projects = () => {
         </div>
     )
 }
-
 export default Projects

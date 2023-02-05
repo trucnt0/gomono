@@ -3,12 +3,13 @@ import { FC, Fragment, ReactNode } from 'react'
 import { FiSend } from 'react-icons/fi'
 
 type Props = {
+    title: string,
     isOpen: boolean,
     onClose: (value: boolean) => void,
     onSubmit: (value: any) => void,
     children: ReactNode
 }
-const Modal: FC<Props> = ({ isOpen, onClose, onSubmit, children }) => {
+const Modal: FC<Props> = ({ title, isOpen, onClose, onSubmit, children }) => {
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -40,7 +41,7 @@ const Modal: FC<Props> = ({ isOpen, onClose, onSubmit, children }) => {
                                     as="h3"
                                     className="text-lg font-medium leading-6 text-gray-900"
                                 >
-                                    New Project
+                                    {title}
                                 </Dialog.Title>
                                 <div className="mt-2 flex flex-col gap-2">
                                     {children}

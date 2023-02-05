@@ -12,7 +12,7 @@
 
 @layer components {
     .f-input {
-        @apply w-full outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:border-slate-200 col-span-2 px-4 py-2 rounded border border-slate-200 active:border-slate-200;
+        @apply w-full outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:border-slate-200 col-span-2 px-4 py-2 rounded border border-slate-200 active:border-slate-200;
     }
 
     .f-btn {
@@ -20,7 +20,7 @@
     }
 
     .f-primary {
-        @apply bg-violet-500 hover:bg-violet-400 active:ring-violet-400 text-white border-violet-200;
+        @apply bg-emerald-500 hover:bg-emerald-400 active:ring-emerald-400 text-white border-emerald-200;
     }
 
     .f-warning {

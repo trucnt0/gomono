@@ -16,7 +16,7 @@ import (
 func main() {
 	app := fiber.New()
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5174, https://gomono.vercel.app",
+		AllowOrigins: "http://localhost:5173, https://gomono.vercel.app",
 	}))
 
 	utils.LoadEnv()
@@ -36,10 +36,20 @@ func main() {
 	}))
 
 	// Protected APIs
+
+	// Tasks
 	app.Get("/api/tasks", handlers.GetTasks)
+
+	// Leads
 	app.Get("/api/leads", handlers.GetLeads)
+
+	// Projects
 	app.Get("/api/projects", handlers.GetProjects)
 	app.Post("/api/projects", handlers.CreateProject)
+
+	// Users
+	app.Get("api/users", handlers.GetUsers)
+	app.Delete("api/users/:id", handlers.DeleteUser)
 
 	log.Fatal(app.Listen(":3001"))
 }

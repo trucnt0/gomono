@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { FiUserPlus } from 'react-icons/fi'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import axios from 'axios'
-import { buildURL } from '../utils'
+import httpClient from '../utils/HttpClient'
 
-const Register = () => {
+const Register: FC = () => {
     const navigate = useNavigate()
     const [searchParams, setSearchParams] = useSearchParams()
     const [from, setFrom] = useState<any>()
@@ -26,7 +25,7 @@ const Register = () => {
         const lastName = fd.get('lastName')
         const email = fd.get('email')
 
-        const response = await axios.post(buildURL('api/register'), {
+        await httpClient.post('api/register', {
             firstName,
             lastName,
             username,

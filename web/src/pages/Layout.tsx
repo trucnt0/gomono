@@ -1,6 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css'
 import { NavLink, Outlet } from 'react-router-dom'
-import { FiBell, FiChevronDown, FiPackage } from 'react-icons/fi'
+import { FiBell, FiChevronDown, FiPackage, FiUserCheck } from 'react-icons/fi'
 import { ToastContainer } from 'react-toastify'
 import { FC } from 'react'
 
@@ -23,6 +23,7 @@ const SideNavContainer: FC<SideNavProps> = ({ }) => {
             <div className='text-2xl text-left p-5'>Gomono</div>
             <nav className='flex flex-col'>
                 <NavItem path='/' title='Projects' icon={<FiPackage />}></NavItem>
+                <NavItem path='/iam' title='IAM' icon={<FiUserCheck />}></NavItem>
             </nav>
         </nav>
     )
