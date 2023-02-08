@@ -1,4 +1,3 @@
-import { lazy, useState } from 'react'
 import {
   Routes,
   Route,
@@ -11,8 +10,6 @@ import Register from './pages/Register'
 import IAM from './pages/IAM'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <AuthProvider>
       <Routes>
