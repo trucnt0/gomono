@@ -48,6 +48,7 @@ func main() {
 	app.Post("/api/projects", handlers.CreateProject)
 
 	// Users
+	app.Post("api/users", handlers.CreateUser)
 	app.Get("api/users", handlers.GetUsers)
 	app.Delete("api/users/:id", handlers.DeleteUser)
 

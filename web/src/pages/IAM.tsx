@@ -54,8 +54,11 @@ const IAM: FC = () => {
 
     const handleChange = (e: any) => setNewUser({ ...newUser, [e.target.name]: e.target.value })
 
-    const createUser = (e: any) => {
-
+    const createUser = async (e: any) => {
+        await httpClient.post('api/users', newUser)
+        await loadUsers()
+        closePopup(null)
+        toast.success('User Created')
     }
 
     const deleteUser = async (id: any) => {
@@ -77,8 +80,9 @@ const IAM: FC = () => {
             </div>
 
             <Modal title='New User' isOpen={isOpen} onClose={closePopup} onSubmit={createUser} >
-                <input name='name' onChange={handleChange} type="text" className='f-input' placeholder='Project Name' />
-                <textarea name='description' onChange={handleChange} rows={10} className='f-input' placeholder='Description' />
+                <input name='firstName' onChange={handleChange} type="text" className='f-input' placeholder='First Name' />
+                <input name='lastName' onChange={handleChange} type="text" className='f-input' placeholder='Last Name' />
+                <input name='email' onChange={handleChange} type="text" className='f-input' placeholder='Email' />
             </Modal>
         </div>
     )

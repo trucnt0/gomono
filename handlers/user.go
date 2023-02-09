@@ -8,6 +8,33 @@ import (
 	"github.com/trucnt0/gomono/entities"
 )
 
+type createUserModel struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+}
+
+// Create a normal user without username & password
+func CreateUser(c *fiber.Ctx) error {
+	newUser := new(createUserModel)
+	if err := c.BodyParser(newUser); err != nil {
+		return err
+	}
+
+	user := &entities.User{
+		FirstName: newUser.FirstName,
+		LastName:  newUser.LastName,
+		Email:     newUser.Email,
+	}
+
+	result := database.Ctx.Create(user)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return c.JSON(user)
+}
+
 func GetUsers(c *fiber.Ctx) error {
 	var users []entities.User
 	res := database.Ctx.Find(&users)
