@@ -1,15 +1,13 @@
 package entities
 
-import "gorm.io/gorm"
-
 type Task struct {
-	gorm.Model
-	Title       string
-	Description string
-	AssigneeID  int
-	Assignee    User
-	CreatedByID int
-	CreatedBy   User
-	ProjectID   int
-	Project     Project
+	Base
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	AssigneeID  int     `json:"assigneeID"`
+	Assignee    User    `json:"assignee"`
+	CreatedByID int     `json:"createdByID"`
+	CreatedBy   User    `json:"createdBy"`
+	ProjectID   int     `json:"projectID"`
+	Project     Project `json:"project"`
 }

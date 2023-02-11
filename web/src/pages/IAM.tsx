@@ -23,22 +23,22 @@ const IAM: FC = () => {
     const columns: ColumnDef[] = [
         {
             label: 'First Name',
-            field: 'FirstName'
+            field: 'firstName'
         },
         {
             label: 'Last Name',
-            field: 'LastName'
+            field: 'lastName'
         },
         {
             label: 'Email',
-            field: 'Email'
+            field: 'email'
         },
         {
             label: 'Status',
-            field: 'IsActive',
+            field: 'isActive',
         },
         {
-            field: 'ID',
+            field: 'id',
             render: (id: any) => {
                 return (
                     <div className='flex items-center gap-2 justify-end'>

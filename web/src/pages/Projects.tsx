@@ -13,30 +13,29 @@ const Projects: FC = () => {
     const [leads, setLeads] = useState<LeadModel[]>([])
     const [newProject, setNewProject] = useState<ProjectModel>()
     const columns: ColumnDef[] = [
-        { field: 'ID', label: '#ID' },
-        { field: 'Name', label: 'Name' },
-        { field: 'Description', label: 'Description' },
+        { field: 'name', label: 'Name' },
+        { field: 'description', label: 'Description' },
         {
-            field: 'Lead',
+            field: 'lead',
             label: 'Project Lead',
-            render: (lead: any) => {
+            render: (lead: LeadModel) => {
                 return (
-                    <span>{lead.FirstName} {lead.LastName}</span>
+                    <span>{lead.firstName} {lead.lastName}</span>
                 )
             }
         },
         {
-            field: 'IsActive',
+            field: 'isActive',
             label: 'Status',
-            render: (isActive: any) => {
+            render: (isActive: boolean) => {
                 return (
                     <span>{isActive ? <FiCheckCircle className='text-emerald-500 text-lg' /> : <FiXCircle className='text-red-500 text-lg' />}</span>
                 )
             }
         },
         {
-            field: 'ID',
-            render: (id: any) => {
+            field: 'id',
+            render: (id: string) => {
                 return (
                     <div className='flex items-center gap-2 justify-end'>
                         <button className='f-btn'><FiEdit2 /></button>
@@ -86,7 +85,7 @@ const Projects: FC = () => {
         <div className='flex flex-col gap-5 items-center'>
             <div className='flex gap-2 lg:w-2/3'>
                 <button className='f-btn f-primary' onClick={() => setIsOpen(true)}><FiFilePlus /> New Project</button>
-                <Link to='/register?from=projects' className='f-btn f-warning'><FiSend /> Create Lead</Link>
+                <Link to='/iam' className='f-btn f-warning'><FiSend /> Create Lead</Link>
                 <button className='f-btn'><FiShare /> Share</button>
                 <button className='f-btn'><FiLock /> Lock</button>
                 <button className='f-btn'><FiExternalLink /> Discussion</button>
@@ -102,7 +101,7 @@ const Projects: FC = () => {
                 <select name='leadID' onChange={handleChange} className='f-input' id="leads">
                     {leads.map((p, i) => {
                         return (
-                            <option value={p.ID} key={p.ID}>{p.FirstName} {p.LastName}</option>
+                            <option value={p.id} key={p.id}>{p.firstName} {p.lastName}</option>
                         )
                     })}
                 </select>

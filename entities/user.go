@@ -1,12 +1,10 @@
 package entities
 
-import "gorm.io/gorm"
-
 type User struct {
-	gorm.Model
-	FirstName      string
-	LastName       string
-	UserName       string
-	HashedPassword string
-	Email          string
+	Base
+	FirstName      string `json:"firstName"`
+	LastName       string `json:"lastName"`
+	UserName       string `json:"userName"`
+	HashedPassword string `json:"hashedPassword"`
+	Email          string `json:"email"`
 }

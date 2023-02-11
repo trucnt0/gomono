@@ -10,6 +10,7 @@ import (
 var Ctx *gorm.DB
 
 func Connect() error {
+
 	var err error
 	Ctx, err = gorm.Open(mysql.Open(utils.Env.DatabaseUrl), &gorm.Config{
 		SkipDefaultTransaction: true,

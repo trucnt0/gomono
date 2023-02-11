@@ -1,23 +1,23 @@
 export interface ProjectModel {
-    ID?: string
-    Name?: string
-    Description?: string
-    LeadID?: string
-    LeadName?: string
-    IsActive?: boolean
-    Lead?: LeadModel
+    id?: string
+    name?: string
+    description?: string
+    leadID?: string
+    leadName?: string
+    isActive?: boolean
+    lead?: LeadModel
 }
 
 export interface LeadModel {
-    FirstName: string
-    LastName: string
-    ID?: string
+    firstName: string
+    lastName: string
+    id?: string
 }
 
 export interface UserModel {
-    FirstName: string
-    LastName: string
-    Email: string
-    Username: string
-    IsActive: boolean
+    firstName: string
+    lastName: string
+    email: string
+    username: string
+    isActive: boolean
 }

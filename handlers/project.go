@@ -3,18 +3,18 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/trucnt0/gomono/database"
 	"github.com/trucnt0/gomono/entities"
 )
 
 type ProjectModel struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	LeadID      string `json:"leadID"`
-	IsActive    bool   `json:"isActive"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	LeadID      uuid.UUID `json:"leadID"`
+	IsActive    bool      `json:"isActive"`
 }
 
 func GetProjects(c *fiber.Ctx) error {
@@ -32,8 +32,7 @@ func CreateProject(c *fiber.Ctx) error {
 		return err
 	}
 
-	leadID, _ := strconv.Atoi(model.LeadID)
-	lead := getLead(leadID)
+	lead := getLead(model.LeadID)
 	fmt.Println(lead)
 	if lead == nil {
 		return c.Status(http.StatusBadRequest).SendString("Lead does not exist.")
@@ -42,7 +41,7 @@ func CreateProject(c *fiber.Ctx) error {
 	project := &entities.Project{
 		Name:        model.Name,
 		Description: model.Description,
-		LeadID:      leadID,
+		LeadID:      model.LeadID,
 		IsActive:    true,
 	}
 	result := database.Ctx.Create(project)
@@ -52,7 +51,7 @@ func CreateProject(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(project)
 }
 
-func getLead(id int) *entities.User {
+func getLead(id uuid.UUID) *entities.User {
 	lead := new(entities.User)
 	database.Ctx.First(&lead, id)
 	return lead
