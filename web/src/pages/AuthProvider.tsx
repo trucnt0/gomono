@@ -1,54 +1,72 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocation, Navigate } from 'react-router-dom'
 import httpClient from '../utils/HttpClient'
-import decodeJwt from 'jwt-decode'
-import { toast } from 'react-toastify'
+import LocalStorageHelper from '../utils/LocalStorageHelper'
+import jwtDecode from 'jwt-decode'
 
 export interface AuthCallbackArgs {
     token?: string
+    refreshToken?: string
     error?: string
 }
 
 type CallbackFunction = (args: AuthCallbackArgs) => void
 
-interface AuthUserClaims {
-    aud: string[]
-    exp: number
-    iat: number
-    userName: string
-}
-
 interface AuthContextType {
-    user: any
+    user: UserClaims
+    refreshUser: VoidFunction
     signin: (user: string, password: string, callback: CallbackFunction) => void
     signout: (callback: CallbackFunction) => void
 }
 
 const AuthContext = React.createContext<AuthContextType>(null!)
 
+export const TOKEN = 'token'
+export const REFRESH_TOKEN = 'refresh_token'
+
+interface AuthResponse {
+    token: string
+    refreshToken: string
+}
+
+interface AuthRequest {
+    username: string
+    password: string
+}
+
+interface UserClaims {
+    sub: string
+    name: string
+    email: string
+    exp: number
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = React.useState<any>()
 
     const signin = async (username: string, password: string, callback: CallbackFunction) => {
         try {
-            const { token } = await httpClient.post<any, { token: string }>('api/login', { username, password })
-            const decode = decodeJwt<AuthUserClaims>(token)
-            setUser(decode.userName)
-            localStorage.setItem('token', token)
-            callback({ token })
+            const { token, refreshToken } = await httpClient.post<AuthRequest, AuthResponse>('api/login', { username, password })
+            LocalStorageHelper.set(TOKEN, token)
+            setUser(jwtDecode<UserClaims>(token))
+            callback({ token, refreshToken })
         }
         catch (e: any) {
             callback({ error: e.message })
         }
     }
 
-    //TODO: 
     const signout = (callback: CallbackFunction) => {
-        console.log('Signing out...')
+        LocalStorageHelper.remove(TOKEN)
         callback({})
     }
 
-    const value = { user, signin, signout }
+    const refreshUser = () => {
+        const token = LocalStorageHelper.get(TOKEN)
+        setUser(jwtDecode<UserClaims>(token!))
+    }
+
+    const value = { user, refreshUser, signin, signout }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
@@ -58,10 +76,10 @@ export function useAuth() {
 }
 
 export function RequireAuth({ children }: { children: JSX.Element }) {
-    let auth = useAuth()
-    let location = useLocation()
+    const token = LocalStorageHelper.get(TOKEN)
+    const location = useLocation()
 
-    if (!auth.user) {
+    if (!token) {
         return <Navigate to="/login" state={{ from: location }} replace />
     }
 

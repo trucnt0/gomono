@@ -50,14 +50,14 @@ const IAM: FC = () => {
         },
     ]
 
-    const closePopup = (e: any) => setOpen(false)
+    const closePopup = () => setOpen(false)
 
     const handleChange = (e: any) => setNewUser({ ...newUser, [e.target.name]: e.target.value })
 
-    const createUser = async (e: any) => {
+    const createUser = async () => {
         await httpClient.post('api/users', newUser)
         await loadUsers()
-        closePopup(null)
+        closePopup()
         toast.success('User Created')
     }
 
@@ -70,12 +70,12 @@ const IAM: FC = () => {
     }
 
     return (
-        <div className='flex flex-col gap-5 items-center'>
-            <div className='flex gap-2 lg:w-2/3'>
+        <div className='flex flex-col gap-5 w-full'>
+            <div className='flex gap-2'>
                 <button className='f-btn f-primary' onClick={() => setOpen(true)}><FiUserPlus /> New User</button>
             </div>
 
-            <div className='flex justify-center lg:w-2/3'>
+            <div className='flex justify-center'>
                 <DataGrid columns={columns} datasource={users} />
             </div>
 

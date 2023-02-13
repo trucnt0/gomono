@@ -22,7 +22,7 @@ func Connect() error {
 	}
 
 	// Migration
-	Ctx.AutoMigrate(&entities.User{}, &entities.Task{}, &entities.Project{})
+	Ctx.AutoMigrate(&entities.User{}, &entities.Task{}, &entities.Project{}, &entities.Role{})
 
 	return nil
 }

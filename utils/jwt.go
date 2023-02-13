@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -12,23 +13,29 @@ type CustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateJwt(user *entities.User) (string, error) {
-	claims := CustomClaims{
-		user.UserName,
-		jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(5 * time.Minute)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			NotBefore: jwt.NewNumericDate(time.Now()),
-			Issuer:    "gomono",
-			Audience:  []string{"client"},
-		},
+func GenerateJwt(user *entities.User) (toekn, refreshToken string) {
+	tk := jwt.New(jwt.SigningMethodHS256)
+	claims := tk.Claims.(jwt.MapClaims)
+	claims["sub"] = user.ID
+	claims["name"] = fmt.Sprintf("%s %s", user.FirstName, user.LastName)
+	claims["email"] = user.Email
+	claims["exp"] = time.Now().Add(time.Minute * 5).Unix()
+	tokenString, err := tk.SignedString([]byte(Env.SecretKey))
+	if err != nil {
+		panic("Failed to generate token")
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	var secret string = Env.SecretKey
-	ss, err := token.SignedString([]byte(secret))
+	refreshTk := jwt.New(jwt.SigningMethodHS256)
+	claims = refreshTk.Claims.(jwt.MapClaims)
+	claims["sub"] = user.ID
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
-	return ss, err
+	refreshTokenString, err := refreshTk.SignedString([]byte(Env.SecretKey))
+	if err != nil {
+		panic("Failed to generate refresh token")
+	}
+
+	return tokenString, refreshTokenString
 }
 
 func VerifyJwt(ss string) bool {

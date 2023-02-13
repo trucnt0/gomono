@@ -5,13 +5,17 @@ export interface ProjectModel {
     leadID?: string
     leadName?: string
     isActive?: boolean
-    lead?: LeadModel
+    lead?: {
+        leadID: string
+        firstName: string
+        lastName: string
+    }
 }
 
 export interface LeadModel {
-    firstName: string
-    lastName: string
+    name: string
     id?: string
+
 }
 
 export interface UserModel {

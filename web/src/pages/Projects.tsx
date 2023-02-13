@@ -1,11 +1,12 @@
 import { FiCheckCircle, FiEdit2, FiExternalLink, FiFilePlus, FiLock, FiSend, FiShare, FiTrash2, FiXCircle } from 'react-icons/fi'
 import DataGrid, { ColumnDef } from '../components/DataGrid'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import Modal from '../components/Modal'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import http from '../utils/HttpClient'
 import { LeadModel, ProjectModel } from '../models'
+import Dropdown from '../components/Dropdown'
 
 const Projects: FC = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -18,7 +19,7 @@ const Projects: FC = () => {
         {
             field: 'lead',
             label: 'Project Lead',
-            render: (lead: LeadModel) => {
+            render: (lead: any) => {
                 return (
                     <span>{lead.firstName} {lead.lastName}</span>
                 )
@@ -47,10 +48,7 @@ const Projects: FC = () => {
     ]
 
     useEffect(() => {
-        (async () => {
-            await loadProjects()
-            await loadLeads()
-        })()
+        loadProjects()
     }, [])
 
     async function loadProjects() {
@@ -81,9 +79,14 @@ const Projects: FC = () => {
         })
     }
 
+    function onPopupOpened() {
+        loadLeads()
+        console.log('Project popup opened....')
+    }
+
     return (
-        <div className='flex flex-col gap-5 items-center'>
-            <div className='flex gap-2 lg:w-2/3'>
+        <div className='flex flex-col gap-5 w-full'>
+            <div className='flex gap-2'>
                 <button className='f-btn f-primary' onClick={() => setIsOpen(true)}><FiFilePlus /> New Project</button>
                 <Link to='/iam' className='f-btn f-warning'><FiSend /> Create Lead</Link>
                 <button className='f-btn'><FiShare /> Share</button>
@@ -91,20 +94,14 @@ const Projects: FC = () => {
                 <button className='f-btn'><FiExternalLink /> Discussion</button>
             </div>
 
-            <div className='flex justify-center lg:w-2/3'>
+            <div className='flex justify-center'>
                 <DataGrid columns={columns} datasource={projects} />
             </div>
 
-            <Modal title='New Project' isOpen={isOpen} onClose={closePopup} onSubmit={createProject} >
+            <Modal title='New Project' isOpen={isOpen} onOpen={onPopupOpened} onClose={closePopup} onSubmit={createProject} >
                 <input name='name' onChange={handleChange} type="text" className='f-input' placeholder='Project Name' />
                 <textarea name='description' onChange={handleChange} rows={10} className='f-input' placeholder='Description' />
-                <select name='leadID' onChange={handleChange} className='f-input' id="leads">
-                    {leads.map((p, i) => {
-                        return (
-                            <option value={p.id} key={p.id}>{p.firstName} {p.lastName}</option>
-                        )
-                    })}
-                </select>
+                <Dropdown name='leadID' onChange={handleChange} datasource={leads} displayMember='name' valueMember='leadID' />
             </Modal>
         </div>
     )

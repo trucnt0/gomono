@@ -23,8 +23,13 @@ type LoginModel struct {
 	Password string `json:"password"`
 }
 
-type JwtModel struct {
-	Token string `json:"token"`
+type TokenModel struct {
+	Token        string `json:"token"`
+	RefreshToken string `json:"refreshToken"`
+}
+
+type RefreshTokenModel struct {
+	RefreshToken string `json:"refreshToken"`
 }
 
 func Login(c *fiber.Ctx) error {
@@ -45,15 +50,28 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnauthorized).SendString("Password is invalid.")
 	}
 
-	jwt, err := utils.GenerateJwt(user)
-	if err != nil {
-		return c.Status(http.StatusInternalServerError).SendString("Failed to generate JWT")
-	}
+	token, refreshToken := utils.GenerateJwt(user)
 
-	return c.Status(http.StatusOK).JSON(&JwtModel{
-		Token: jwt,
+	return c.Status(http.StatusOK).JSON(&TokenModel{
+		Token:        token,
+		RefreshToken: refreshToken,
 	})
 }
+
+// func RefreshAccessToken(c *fiber.Ctx) error {
+// 	model := new(RefreshTokenModel)
+// 	if err := c.BodyParser(model); err != nil {
+// 		return err
+// 	}
+// 	isValid := utils.VerifyJwt(model.RefreshToken)
+// 	if !isValid {
+// 		return c.Status(http.StatusUnauthorized).SendString("Invalid refresh token")
+// 	}
+
+// 	fmt.Printf("Refresh token: %s", model.RefreshToken)
+
+// 	return c.JSON("OK")
+// }
 
 func RegisterAccount(c *fiber.Ctx) error {
 	acc := new(RegisterModel)

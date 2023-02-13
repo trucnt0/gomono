@@ -19,7 +19,7 @@ type ProjectModel struct {
 
 func GetProjects(c *fiber.Ctx) error {
 	var projects []entities.Project
-	res := database.Ctx.Preload("Lead").Find(&projects)
+	res := database.Ctx.Order("created_at ASC").Preload("Lead").Find(&projects)
 	if res.Error != nil {
 		return res.Error
 	}

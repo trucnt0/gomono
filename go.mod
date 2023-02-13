@@ -7,6 +7,7 @@ require (
 	github.com/gofiber/jwt/v3 v3.3.5
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/google/uuid v1.3.0
+	github.com/samber/lo v1.37.0
 	github.com/spf13/viper v1.15.0
 	golang.org/x/crypto v0.5.0
 	gorm.io/driver/mysql v1.4.5
@@ -40,6 +41,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.44.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
+	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/text v0.6.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
