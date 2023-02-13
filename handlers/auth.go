@@ -50,28 +50,13 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnauthorized).SendString("Password is invalid.")
 	}
 
-	token, refreshToken := utils.GenerateJwt(user)
+	token, refreshToken := utils.GenerateToken(user)
 
 	return c.Status(http.StatusOK).JSON(&TokenModel{
 		Token:        token,
 		RefreshToken: refreshToken,
 	})
 }
-
-// func RefreshAccessToken(c *fiber.Ctx) error {
-// 	model := new(RefreshTokenModel)
-// 	if err := c.BodyParser(model); err != nil {
-// 		return err
-// 	}
-// 	isValid := utils.VerifyJwt(model.RefreshToken)
-// 	if !isValid {
-// 		return c.Status(http.StatusUnauthorized).SendString("Invalid refresh token")
-// 	}
-
-// 	fmt.Printf("Refresh token: %s", model.RefreshToken)
-
-// 	return c.JSON("OK")
-// }
 
 func RegisterAccount(c *fiber.Ctx) error {
 	acc := new(RegisterModel)

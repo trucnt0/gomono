@@ -1,11 +1,16 @@
 import axios, { AxiosRequestConfig } from 'axios'
+import LocalStorageHelper from './LocalStorageHelper'
+import { TOKEN } from '../pages/AuthProvider'
 
 axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response
 }, function (error) {
-    console.log(error)
+    if (error.response.status === 401) {
+        // Token expired
+        LocalStorageHelper.remove(TOKEN)
+    }
     return Promise.reject(error)
 })
 

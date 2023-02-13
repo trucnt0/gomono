@@ -47,7 +47,7 @@ func GetUsers(c *fiber.Ctx) error {
 
 func DeleteUser(c *fiber.Ctx) error {
 	userId := c.Params("id")
-	res := database.Ctx.Delete(&entities.User{}, userId)
+	res := database.Ctx.Where("id = ?", userId).Delete(&entities.User{})
 	if res.Error != nil {
 		return res.Error
 	}
