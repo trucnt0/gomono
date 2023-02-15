@@ -5,8 +5,10 @@ import Modal from '../components/Modal'
 import httpClient from '../utils/HttpClient'
 import { UserModel } from '../models'
 import { toast } from 'react-toastify'
+import Page from '../components/Page'
+import { IoPerson } from 'react-icons/io5'
 
-const IAM: FC = () => {
+const Users: FC = () => {
     const [users, setUsers] = useState<UserModel[]>([])
     const [newUser, setNewUser] = useState<any>()
     const [isOpen, setOpen] = useState(false)
@@ -70,22 +72,24 @@ const IAM: FC = () => {
     }
 
     return (
-        <div className='flex flex-col gap-5 w-full'>
-            <div className='flex gap-2'>
-                <button className='f-btn f-primary' onClick={() => setOpen(true)}><FiUserPlus /> New User</button>
-            </div>
+        <Page icon={<IoPerson />} caption='Users Manager'>
+            <div className='flex flex-col gap-5 w-full'>
+                <div className='flex gap-2'>
+                    <button className='f-btn f-primary' onClick={() => setOpen(true)}><FiUserPlus /> New User</button>
+                </div>
 
-            <div className='flex justify-center'>
-                <DataGrid columns={columns} datasource={users} />
-            </div>
+                <div className='flex justify-center'>
+                    <DataGrid columns={columns} datasource={users} />
+                </div>
 
-            <Modal title='New User' isOpen={isOpen} onClose={closePopup} onSubmit={createUser} >
-                <input name='firstName' onChange={handleChange} type="text" className='f-input' placeholder='First Name' />
-                <input name='lastName' onChange={handleChange} type="text" className='f-input' placeholder='Last Name' />
-                <input name='email' onChange={handleChange} type="text" className='f-input' placeholder='Email' />
-            </Modal>
-        </div>
+                <Modal title='New User' isOpen={isOpen} onClose={closePopup} onSubmit={createUser} >
+                    <input name='firstName' onChange={handleChange} type="text" className='f-input' placeholder='First Name' />
+                    <input name='lastName' onChange={handleChange} type="text" className='f-input' placeholder='Last Name' />
+                    <input name='email' onChange={handleChange} type="text" className='f-input' placeholder='Email' />
+                </Modal>
+            </div>
+        </Page>
     )
 }
 
-export default IAM
+export default Users

@@ -7,7 +7,8 @@ import Projects from './pages/Projects'
 import Layout from './pages/Layout'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import IAM from './pages/IAM'
+import Users from './pages/Users'
+import Roles from './pages/Roles'
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
           </RequireAuth>
         }>
           <Route index element={<Projects />} />
-          <Route path='iam' element={<IAM />} />
+          <Route path='users' element={<Users />} />
+          <Route path='roles' element={<Roles />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

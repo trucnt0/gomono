@@ -1,6 +1,7 @@
 import 'react-toastify/dist/ReactToastify.css'
 import { NavLink, Outlet } from 'react-router-dom'
-import { FiBell, FiChevronDown, FiPackage, FiUserCheck } from 'react-icons/fi'
+import { FiBell, FiChevronDown } from 'react-icons/fi'
+import { IoAccessibility, IoHome, IoPerson, IoPower } from 'react-icons/io5'
 import { ToastContainer } from 'react-toastify'
 import { FC, ReactNode, useEffect } from 'react'
 import { useAuth } from "./AuthProvider"
@@ -23,8 +24,9 @@ const SideNavContainer: FC<SideNavProps> = ({ }) => {
         <nav className='w-[250px] flex flex-col border-r bg-emerald-500 text-white'>
             <div className='text-2xl text-left p-5'>Gomono</div>
             <nav className='flex flex-col'>
-                <NavItem path='/' title='Projects' icon={<FiPackage />}></NavItem>
-                <NavItem path='/iam' title='IAM' icon={<FiUserCheck />}></NavItem>
+                <NavItem path='/' title='Projects' icon={<IoHome className='text-xl' />}></NavItem>
+                <NavItem path='/users' title='Users' icon={<IoPerson className='text-xl' />}></NavItem>
+                <NavItem path='/roles' title='Roles' icon={<IoAccessibility className='text-xl' />}></NavItem>
             </nav>
         </nav>
     )
@@ -63,7 +65,7 @@ const MainContainer: FC<MainContainerProps> = ({ }) => {
 
 export default () => {
     return (
-        <div className='flex w-screen h-screen'>
+        <div className='flex w-screen h-screen bg-slate-100'>
             <ToastContainer />
             <SideNavContainer />
             <MainContainer />

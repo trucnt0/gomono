@@ -10,7 +10,7 @@ import (
 	"github.com/trucnt0/gomono/entities"
 )
 
-type LeadModel struct {
+type leadModel struct {
 	LeadID uuid.UUID `json:"leadID"`
 	Name   string    `json:"name"`
 }
@@ -18,11 +18,11 @@ type LeadModel struct {
 func GetLeads(c *fiber.Ctx) error {
 	var users []entities.User
 	database.Ctx.Find(&users)
-	leads := lo.Map(users, func(lead entities.User, index int) LeadModel {
-		return LeadModel{
+	result := lo.Map(users, func(lead entities.User, index int) leadModel {
+		return leadModel{
 			LeadID: lead.ID,
 			Name:   fmt.Sprintf("%s %s", lead.FirstName, lead.LastName),
 		}
 	})
-	return c.JSON(leads)
+	return c.JSON(result)
 }

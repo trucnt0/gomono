@@ -10,7 +10,7 @@ import (
 	"github.com/trucnt0/gomono/entities"
 )
 
-type ProjectModel struct {
+type projectModel struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	LeadID      uuid.UUID `json:"leadID"`
@@ -27,7 +27,7 @@ func GetProjects(c *fiber.Ctx) error {
 }
 
 func CreateProject(c *fiber.Ctx) error {
-	model := new(ProjectModel)
+	model := new(projectModel)
 	if err := c.BodyParser(model); err != nil {
 		return err
 	}

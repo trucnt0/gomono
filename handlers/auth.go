@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RegisterModel struct {
+type registerModel struct {
 	UserName  string `json:"username"`
 	Password  string `json:"password"`
 	Email     string `json:"email"`
@@ -18,22 +18,18 @@ type RegisterModel struct {
 	LastName  string `json:"lastName"`
 }
 
-type LoginModel struct {
+type loginModel struct {
 	UserName string `json:"username"`
 	Password string `json:"password"`
 }
 
-type TokenModel struct {
+type tokenModel struct {
 	Token        string `json:"token"`
 	RefreshToken string `json:"refreshToken"`
 }
 
-type RefreshTokenModel struct {
-	RefreshToken string `json:"refreshToken"`
-}
-
 func Login(c *fiber.Ctx) error {
-	login := new(LoginModel)
+	login := new(loginModel)
 	if err := c.BodyParser(login); err != nil {
 		return err
 	}
@@ -52,14 +48,14 @@ func Login(c *fiber.Ctx) error {
 
 	token, refreshToken := utils.GenerateToken(user)
 
-	return c.Status(http.StatusOK).JSON(&TokenModel{
+	return c.Status(http.StatusOK).JSON(&tokenModel{
 		Token:        token,
 		RefreshToken: refreshToken,
 	})
 }
 
 func RegisterAccount(c *fiber.Ctx) error {
-	acc := new(RegisterModel)
+	acc := new(registerModel)
 	if err := c.BodyParser(acc); err != nil {
 		return err
 	}

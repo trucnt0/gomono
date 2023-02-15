@@ -36,7 +36,6 @@ func main() {
 	}))
 
 	// Protected APIs
-
 	// Tasks
 	app.Get("/api/tasks", handlers.GetTasks)
 
@@ -51,6 +50,10 @@ func main() {
 	app.Post("api/users", handlers.CreateUser)
 	app.Get("api/users", handlers.GetUsers)
 	app.Delete("api/users/:id", handlers.DeleteUser)
+
+	// Roles
+	app.Get("/api/roles", handlers.GetRoles)
+	app.Post("/api/roles", handlers.CreateRole)
 
 	log.Fatal(app.Listen(":3001"))
 }
