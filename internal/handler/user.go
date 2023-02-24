@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"fmt"
@@ -7,8 +7,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/samber/lo"
-	"github.com/trucnt0/gomono/database"
-	"github.com/trucnt0/gomono/entities"
+	"github.com/trucnt0/gomono/internal/entity"
+	"github.com/trucnt0/gomono/pkg/database"
 )
 
 type createUserModel struct {
@@ -33,7 +33,7 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(err)
 	}
 
-	user := &entities.User{
+	user := &entity.User{
 		FirstName: newUser.FirstName,
 		LastName:  newUser.LastName,
 		Email:     newUser.Email,
@@ -48,13 +48,13 @@ func CreateUser(c *fiber.Ctx) error {
 }
 
 func GetUsers(c *fiber.Ctx) error {
-	var users []entities.User
+	var users []entity.User
 	res := database.Ctx.Find(&users)
 	if res.Error != nil {
 		return c.Status(http.StatusBadRequest).JSON(res.Error)
 	}
 
-	result := lo.Map(users, func(u entities.User, index int) userModel {
+	result := lo.Map(users, func(u entity.User, index int) userModel {
 		return userModel{
 			ID:        u.ID,
 			FirstName: u.FirstName,
@@ -70,7 +70,7 @@ func GetUsers(c *fiber.Ctx) error {
 
 func DeleteUser(c *fiber.Ctx) error {
 	userId := c.Params("id")
-	res := database.Ctx.Where("id = ?", userId).Delete(&entities.User{})
+	res := database.Ctx.Where("id = ?", userId).Delete(&entity.User{})
 	if res.Error != nil {
 		return c.Status(http.StatusBadRequest).JSON(res.Error)
 	}

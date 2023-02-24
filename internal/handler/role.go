@@ -1,11 +1,11 @@
-package handlers
+package handler
 
 import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/trucnt0/gomono/database"
-	"github.com/trucnt0/gomono/entities"
+	"github.com/trucnt0/gomono/internal/entity"
+	"github.com/trucnt0/gomono/pkg/database"
 )
 
 type RoleModel struct {
@@ -14,7 +14,7 @@ type RoleModel struct {
 }
 
 func GetRoles(c *fiber.Ctx) error {
-	var roles []entities.Role
+	var roles []entity.Role
 	res := database.Ctx.Find(&roles)
 	if res.Error != nil {
 		return res.Error
@@ -28,7 +28,7 @@ func CreateRole(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(err)
 	}
 
-	role := &entities.Role{
+	role := &entity.Role{
 		Name:        req.Name,
 		Description: req.Description,
 	}

@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/trucnt0/gomono/database"
-	"github.com/trucnt0/gomono/entities"
+	"github.com/trucnt0/gomono/internal/entity"
+	"github.com/trucnt0/gomono/pkg/database"
 )
 
 type projectModel struct {
@@ -18,7 +18,7 @@ type projectModel struct {
 }
 
 func GetProjects(c *fiber.Ctx) error {
-	var projects []entities.Project
+	var projects []entity.Project
 	res := database.Ctx.Order("created_at ASC").Preload("Lead").Find(&projects)
 	if res.Error != nil {
 		return res.Error
@@ -38,7 +38,7 @@ func CreateProject(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).SendString("Lead does not exist.")
 	}
 
-	project := &entities.Project{
+	project := &entity.Project{
 		Name:        model.Name,
 		Description: model.Description,
 		LeadID:      model.LeadID,
@@ -51,8 +51,8 @@ func CreateProject(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(project)
 }
 
-func getLead(id uuid.UUID) *entities.User {
-	lead := new(entities.User)
+func getLead(id uuid.UUID) *entity.User {
+	lead := new(entity.User)
 	database.Ctx.First(&lead, id)
 	return lead
 }

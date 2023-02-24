@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/samber/lo"
-	"github.com/trucnt0/gomono/database"
-	"github.com/trucnt0/gomono/entities"
+	"github.com/trucnt0/gomono/internal/entity"
+	"github.com/trucnt0/gomono/pkg/database"
 )
 
 type leadModel struct {
@@ -16,9 +16,9 @@ type leadModel struct {
 }
 
 func GetLeads(c *fiber.Ctx) error {
-	var users []entities.User
+	var users []entity.User
 	database.Ctx.Find(&users)
-	result := lo.Map(users, func(lead entities.User, index int) leadModel {
+	result := lo.Map(users, func(lead entity.User, index int) leadModel {
 		return leadModel{
 			LeadID: lead.ID,
 			Name:   fmt.Sprintf("%s %s", lead.FirstName, lead.LastName),

@@ -1,12 +1,12 @@
-package handlers
+package handler
 
 import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/trucnt0/gomono/database"
-	"github.com/trucnt0/gomono/entities"
-	"github.com/trucnt0/gomono/utils"
+	"github.com/trucnt0/gomono/internal/entity"
+	"github.com/trucnt0/gomono/pkg/database"
+	"github.com/trucnt0/gomono/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -34,7 +34,7 @@ func Login(c *fiber.Ctx) error {
 		return err
 	}
 
-	user := new(entities.User)
+	user := new(entity.User)
 	database.Ctx.Where("user_name = ?", login.UserName).First(&user)
 
 	if user == nil {
@@ -46,7 +46,7 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnauthorized).SendString("Password is invalid.")
 	}
 
-	token, refreshToken := utils.GenerateToken(user)
+	token, refreshToken := jwt.GenerateToken(user)
 
 	return c.Status(http.StatusOK).JSON(&tokenModel{
 		Token:        token,
@@ -65,7 +65,7 @@ func RegisterAccount(c *fiber.Ctx) error {
 		return err
 	}
 
-	user := &entities.User{
+	user := &entity.User{
 		FirstName:      acc.FirstName,
 		LastName:       acc.LastName,
 		Email:          acc.Email,

@@ -1,15 +1,15 @@
-package handlers
+package handler
 
 import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/trucnt0/gomono/database"
-	"github.com/trucnt0/gomono/entities"
+	"github.com/trucnt0/gomono/internal/entity"
+	"github.com/trucnt0/gomono/pkg/database"
 )
 
 func GetTasks(c *fiber.Ctx) error {
-	var tasks []entities.Task
+	var tasks []entity.Task
 	res := database.Ctx.Find(&tasks)
 	if res.Error != nil {
 		return res.Error

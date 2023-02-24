@@ -1,8 +1,8 @@
 package database
 
 import (
-	"github.com/trucnt0/gomono/entities"
-	"github.com/trucnt0/gomono/utils"
+	"github.com/trucnt0/gomono/config"
+	"github.com/trucnt0/gomono/internal/entity"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -12,7 +12,7 @@ var Ctx *gorm.DB
 func Connect() error {
 
 	var err error
-	Ctx, err = gorm.Open(mysql.Open(utils.Env.DatabaseUrl), &gorm.Config{
+	Ctx, err = gorm.Open(mysql.Open(config.Env.DatabaseUrl), &gorm.Config{
 		SkipDefaultTransaction: true,
 		PrepareStmt:            true,
 	})
@@ -22,7 +22,7 @@ func Connect() error {
 	}
 
 	// Migration
-	Ctx.AutoMigrate(&entities.User{}, &entities.Task{}, &entities.Project{}, &entities.Role{})
+	Ctx.AutoMigrate(&entity.User{}, &entity.Task{}, &entity.Project{}, &entity.Role{})
 
 	return nil
 }

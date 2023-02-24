@@ -1,8 +1,9 @@
-package utils
+package config
 
 import (
-	"github.com/spf13/viper"
 	"log"
+
+	"github.com/spf13/viper"
 )
 
 type environment struct {
@@ -14,18 +15,18 @@ var Env *environment
 
 func LoadEnv() {
 	v := viper.New()
-    v.SetConfigFile(".env")
+	v.SetConfigFile(".env")
 	v.AutomaticEnv()
-    err := v.ReadInConfig()
-    if err != nil {
-        log.Fatal("Unable to read env vairables.")
-    }
+	err := v.ReadInConfig()
+	if err != nil {
+		log.Fatal("Unable to read env vairables.")
+	}
 
-    e := new(environment)
+	e := new(environment)
 	errUnmarshal := v.Unmarshal(&e)
 	if errUnmarshal != nil {
 		log.Fatalf("Unable to load environment: %s", errUnmarshal)
 	}
 
-    Env = e
+	Env = e
 }
