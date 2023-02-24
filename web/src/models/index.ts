@@ -12,6 +12,13 @@ export interface ProjectModel {
     }
 }
 
+export interface NewProjectModel {
+    name?: string
+    description?: string
+    isActive?: boolean
+    leadID?: string
+}
+
 export interface LeadModel {
     name: string
     id?: string
