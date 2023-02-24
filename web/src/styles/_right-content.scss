@@ -8,12 +8,11 @@ $topNavBackgroundBorder: #cbd5e1;
 
     .topbar{
         height: 75px;
-        background-color: $topNavBackground;
-        border: 1px solid $topNavBackgroundBorder;
         display: flex;
         align-items: center;
         padding: 20px;
         justify-content: space-between;
+        background-color: #FFFFFF;
 
         .profile {
             ul{

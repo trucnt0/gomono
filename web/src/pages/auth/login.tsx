@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { InputText } from 'primereact/inputtext'
-import { Card } from 'primereact/card'
+import { Password } from 'primereact/password'
+import { Toast } from 'primereact/toast'
 import { Button } from 'primereact/button'
-import { Toast, ToastMessage } from 'primereact/toast'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AuthCallbackArgs, useAuth } from '../auth-provider'
 
@@ -23,6 +23,7 @@ function Login() {
             toast.current.show({ severity: "error", summary: "Invalid Credential", detail: "Username and password are required." })
             return
         }
+
         setLoading(true)
         auth.signin(credential.username, credential.password, (e: AuthCallbackArgs) => {
             setLoading(false)
@@ -40,15 +41,31 @@ function Login() {
     }
 
     return (
-        <div className="flex flex-row justify-content-center mt-6">
-            <Card title="Login" subTitle="Welcome to GOMONO" className="w-30rem">
-                <div className="flex flex-column gap-2">
-                    <InputText name='username' onChange={handleChange} placeholder='Username'></InputText>
-                    <InputText name='password' onChange={handleChange} type='password' placeholder='Password'></InputText>
-                    <Button onClick={login} loading={loading} label='Login'></Button>
-                    <Button label='Register' severity="warning"></Button>
+        <div className="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden p-input-filled">
+            <div className="flex flex-column align-items-center justify-content-center">
+                <div style={{ borderRadius: '56px', padding: '0.3rem', background: 'linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)' }}>
+                    <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
+                        <div className="text-center mb-5">
+                            <div className="text-900 text-3xl font-medium mb-3">Welcome, Gomono!</div>
+                            <span className="text-600 font-medium">Sign in to continue</span>
+                        </div>
+
+                        <div>
+                            <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
+                                Email
+                            </label>
+                            <InputText onChange={handleChange} name='username' type="text" placeholder="Username" className="w-full mb-5" style={{ padding: '1rem' }} />
+
+                            <label htmlFor="password1" className="block text-900 font-medium text-xl mb-2">
+                                Password
+                            </label>
+                            <Password onChange={handleChange} name="password" placeholder="Password" toggleMask className="w-full mb-5" inputClassName='w-full p-3'></Password>
+
+                            <Button loading={loading} label="Sign In" className="w-full p-3 text-xl" onClick={login}></Button>
+                        </div>
+                    </div>
                 </div>
-            </Card>
+            </div>
             <Toast ref={toast} />
         </div>
     )

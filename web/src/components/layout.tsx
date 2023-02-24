@@ -1,22 +1,24 @@
 import 'react-toastify/dist/ReactToastify.css'
-import { Link, Outlet, useNavigate } from 'react-router-dom'
-import { FiArrowRight, FiHome, FiSettings, FiSlack, FiSunrise, FiUser } from 'react-icons/fi'
-import { FC, ReactNode, useEffect } from 'react'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { ReactNode, useEffect } from 'react'
 import { TOKEN, useAuth } from '../pages/auth-provider'
 import { Button } from 'primereact/button'
+import { Avatar } from 'primereact/avatar'
+import { Message } from 'primereact/message'
 import LocalStorageHelper from '../utils/localstorage-helper'
+import { IoPieChart, IoPower } from 'react-icons/io5'
 
 const navs: MenuItem[] = [
     {
-        label: 'Home',
+        label: 'Dashboard',
         path: '/',
-        icon: <FiHome />
+        icon: <IoPieChart />
     },
-    // {
-    //     label: 'Projects',
-    //     path: '/projects',
-    //     icon: <FiSunrise />
-    // },
+    {
+        label: 'Projects',
+        path: '/projects',
+        icon: <IoPower />
+    },
     // {
     //     label: 'Settings',
     //     path: '/settings',
@@ -64,26 +66,28 @@ export default () => {
 
     return (
         <div className='layout'>
-            <nav className='sidebar bg-primary'>
+            <nav className='sidebar'>
                 <div className="brand">GOMONO</div>
                 <ul className='nav'>
                     {navs.map((n, i) => {
                         return (
-                            <Link className='nav-item' to={n.path}>
+                            <NavLink className='nav-item' to={n.path}>
                                 {n.icon} <span>{n.label}</span>
-                            </Link>
+                            </NavLink>
                         )
                     })}
                 </ul>
                 <div className='footer'>
-                    {!!user && <Button onClick={logout} label='Logout' className='w-full'></Button>}
+                    {!!user && <Button onClick={logout} label='Logout' className='w-full p-3 border-solid border-indigo-300'></Button>}
                 </div>
             </nav>
             <div className='right-content'>
                 <nav className="topbar">
-                    <div></div>
+                    <div>
+                        <Message severity="warn" text="Welcome to GOMONO! Searchbar comming soon..." />
+                    </div>
                     <div className='profile'>
-                        <span>Hi {user?.name}</span>
+                        <Avatar label={user?.name?.substring(0, 2)?.toUpperCase()} size='large' shape="circle" />
                     </div>
                 </nav>
                 <main className="content">

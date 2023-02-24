@@ -6,30 +6,33 @@ $padding-y: 18px;
     width: 300px;
     display: flex;
     flex-direction: column;
-    
+    background-color: var(--primary-color);
+    color: var(--primary-color-text);
+
     .brand{
-        color: #FFF;
         font-size: 20pt;
         font-weight: bold;
         padding: $padding-y $padding-x;
         height: 80px;
+        color: var(--primary-color-text);
     }
 
     .nav {
         margin: 0;
         padding: 0;
         flex: 1;
+
         .nav-item {
             display: flex;
             align-items: center;
             gap: 5px;
-            color: #FFF;
             padding: $padding-y $padding-x;
-
+            color: var(--primary-color-text);
+            
+            &.active,
             &:hover{
-                background-color: var(--primary-color-text);
-                color: var(--primary-color);
-                transition: all $transitionDuration;
+                background-color: var(--highlight-bg);
+                color: var(--highlight-text-color);
             }
         }
     }
