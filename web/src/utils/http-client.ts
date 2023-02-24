@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios'
-import LocalStorageHelper from './LocalStorageHelper'
-import { TOKEN } from '../pages/AuthProvider'
+import LocalStorageHelper from './localstorage-helper'
+import { TOKEN } from '../pages/auth-provider'
 
 axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger

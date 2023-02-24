@@ -1,14 +1,9 @@
-import {
-  Routes,
-  Route,
-} from "react-router-dom"
-import { AuthProvider, RequireAuth } from './pages/AuthProvider'
-import Projects from './pages/Projects'
-import Layout from './pages/Layout'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Users from './pages/Users'
-import Roles from './pages/Roles'
+import { Routes, Route } from "react-router-dom"
+import { AuthProvider, RequireAuth } from './pages/auth-provider'
+import Layout from './components/layout'
+import Register from './pages/auth/register'
+import Projects from './pages/project/projects'
+import Login from './pages/auth/login'
 
 function App() {
   return (
@@ -20,8 +15,6 @@ function App() {
           </RequireAuth>
         }>
           <Route index element={<Projects />} />
-          <Route path='users' element={<Users />} />
-          <Route path='roles' element={<Roles />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

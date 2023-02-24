@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useLocation, Navigate } from 'react-router-dom'
-import httpClient from '../utils/HttpClient'
-import LocalStorageHelper from '../utils/LocalStorageHelper'
+import httpClient from '../utils/http-client'
+import LocalStorageHelper from '../utils/localstorage-helper'
 import jwtDecode from 'jwt-decode'
 
 export interface AuthCallbackArgs {

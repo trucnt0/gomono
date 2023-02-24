@@ -1,0 +1,31 @@
+$topNavBackground: #f1f5f9;
+$topNavBackgroundBorder: #cbd5e1;
+
+.right-content{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .topbar{
+        height: 75px;
+        background-color: $topNavBackground;
+        border: 1px solid $topNavBackgroundBorder;
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        justify-content: space-between;
+
+        .profile {
+            ul{
+                text-decoration: none;
+                li{
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+
+    .content{
+        flex: 1;
+    }
+}

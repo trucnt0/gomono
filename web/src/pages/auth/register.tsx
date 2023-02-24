@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { FiUserPlus } from 'react-icons/fi'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import httpClient from '../utils/HttpClient'
+import httpClient from '../../utils/http-client'
 
 const Register: FC = () => {
     const navigate = useNavigate()
@@ -38,21 +38,21 @@ const Register: FC = () => {
     }
 
     return (
-        <div className="flex text-center justify-center h-screen py-52 bg-no-repeat bg-cover bg-center bg-fixed">
+        <div>
             <div>
-                <div className='p-10 flex items-center flex-col bg-white rounded border shadow-xl'>
-                    <h3 className='text-5xl mb-10'>Create an account</h3>
-                    <form onSubmit={handleSubmit} className='flex flex-col gap-2 w-4/5'>
-                        <input required autoComplete='off' placeholder='First Name' className='f-input' type="text" name="firstName" id="firstName" />
-                        <input required autoComplete='off' placeholder='Last Name' className='f-input' type="text" name="lastName" id="lastName" />
+                <div>
+                    <h3>Create an account</h3>
+                    <form onSubmit={handleSubmit} >
+                        <input required autoComplete='off' placeholder='First Name' type="text" name="firstName" id="firstName" />
+                        <input required autoComplete='off' placeholder='Last Name' type="text" name="lastName" id="lastName" />
                         {!from && (
                             <>
-                                <input autoComplete='off' placeholder='Username' className='f-input' type="text" name="username" id="username" />
-                                <input autoComplete='off' placeholder='Email' className='f-input' type="text" name="email" id="email" />
-                                <input autoComplete='off' placeholder='Password' className='f-input' type="password" name="password" id="password" />
+                                <input autoComplete='off' placeholder='Username' type="text" name="username" id="username" />
+                                <input autoComplete='off' placeholder='Email' type="text" name="email" id="email" />
+                                <input autoComplete='off' placeholder='Password' type="password" name="password" id="password" />
                             </>
                         )}
-                        <button className='f-btn'><FiUserPlus /> Submit</button>
+                        <button ><FiUserPlus /> Submit</button>
                         <Link to='/login'>Already have an account ?</Link>
                     </form>
                 </div>
