@@ -19,11 +19,37 @@ type projectModel struct {
 
 func GetProjects(c *fiber.Ctx) error {
 	var projects []entity.Project
-	res := database.Ctx.Order("created_at ASC").Preload("Lead").Find(&projects)
+	res := database.Ctx.Order("created_at DESC").Preload("Lead").Find(&projects)
 	if res.Error != nil {
 		return res.Error
 	}
 	return c.Status(http.StatusOK).JSON(projects)
+}
+
+func UpdateProject(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	model := new(projectModel)
+	if err := c.BodyParser(model); err != nil {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	project := new(entity.Project)
+	res := database.Ctx.Where("id = ?", id).Find(&project)
+	if res.Error != nil {
+		return res.Error
+	}
+
+	project.IsActive = model.IsActive
+	project.Name = model.Name
+	project.Description = model.Description
+	project.LeadID = model.LeadID
+	database.Ctx.Save(&project)
+
+	return c.Status(http.StatusOK).JSON(project)
 }
 
 func CreateProject(c *fiber.Ctx) error {
@@ -42,7 +68,7 @@ func CreateProject(c *fiber.Ctx) error {
 		Name:        model.Name,
 		Description: model.Description,
 		LeadID:      model.LeadID,
-		IsActive:    true,
+		IsActive:    model.IsActive,
 	}
 	result := database.Ctx.Create(project)
 	if result.Error != nil {

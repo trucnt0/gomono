@@ -3,7 +3,7 @@ import httpClient from '../../utils/http-client'
 import Page from '../../components/page'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
-import { LeadModel, ProjectModel } from 'src/models'
+import { LeadModel, ProjectModel } from '../../models'
 import { useEffect, useState } from 'react'
 import { Dialog } from 'primereact/dialog'
 import { IoCheckmarkCircle } from 'react-icons/io5'
@@ -12,23 +12,38 @@ import { InputText } from 'primereact/inputtext'
 import { Checkbox } from 'primereact/checkbox'
 import { Editor } from 'primereact/editor'
 import { Dropdown } from 'primereact/dropdown'
+import { Message } from 'primereact/message'
 import { useFormik } from 'formik'
+import * as yup from 'yup'
+
+const projectSchema = yup.object({
+    name: yup.string().required(),
+    description: yup.string().nullable(),
+    leadID: yup.string().required(),
+})
 
 function Projects() {
     const [projects, setProjects] = useState<ProjectModel[]>([])
     const [leads, setLeads] = useState<LeadModel[]>([])
     const [showPopup, setShowPopup] = useState(false)
-    const [newProject, setNewProject] = useState<any>()
 
     const formik = useFormik({
         initialValues: {
+            id: '',
             name: '',
             description: '',
             isActive: false,
             leadID: ''
         },
+        validationSchema: projectSchema,
         onSubmit: async (values) => {
-            await httpClient.post('api/projects', values)
+            console.log(values)
+            if (!!values.id) {
+                await httpClient.put(`api/projects/${values.id}`, values)
+            }
+            else {
+                await httpClient.post('api/projects', values)
+            }
             await loadProjects()
             formik.resetForm()
             setShowPopup(false)
@@ -50,8 +65,14 @@ function Projects() {
         setLeads(leads)
     }
 
-    const handleSubmit = () => {
-        console.log(newProject)
+    const handleEdit = (p: ProjectModel) => {
+        console.log(p)
+        setShowPopup(true)
+        formik.setFieldValue('id', p.id)
+        formik.setFieldValue("name", p.name)
+        formik.setFieldValue("description", p.description)
+        formik.setFieldValue("isActive", p.isActive)
+        formik.setFieldValue("leadID", p.leadID)
     }
 
     const leadTemplate = (p: ProjectModel) => (
@@ -61,6 +82,10 @@ function Projects() {
     const statusTemplate = (p: ProjectModel) => (
         <IoCheckmarkCircle size={30} className={classNames(p.isActive ? 'text-green-500' : 'text-yellow-500')} />
     )
+
+    const editTemplate = (p: ProjectModel) => {
+        return (<Button onClick={() => handleEdit(p)} icon='pi pi-pencil' severity="secondary" className='p-button-outlined'></Button>)
+    }
 
     const commands = (
         <div className='flex gap-2'>
@@ -89,6 +114,7 @@ function Projects() {
                     <Column sortable filter field="description" header="Description"></Column>
                     <Column sortable filter field="lead" header="Lead" body={leadTemplate}></Column>
                     <Column sortable filter field="isActive" header="Status" body={statusTemplate} style={{ width: 80, textAlign: "center" }}></Column>
+                    <Column style={{ width: 80, textAlign: "center" }} body={editTemplate}></Column>
                 </DataTable>
             </div>
 
@@ -96,6 +122,7 @@ function Projects() {
                 <form onSubmit={formik.handleSubmit}>
                     <label htmlFor="name" className="block text-900 font-medium mb-2">Project Name</label>
                     <InputText onChange={formik.handleChange} value={formik.values.name} id="name" type="text" placeholder="Project Name" className="w-full mb-3" />
+                    {formik.errors.name && <Message severity="error" text="Project name is required" />}
 
                     <label htmlFor="lead" className="block text-900 font-medium mb-2">Lead</label>
                     <Dropdown
@@ -103,6 +130,8 @@ function Projects() {
                             formik.setFieldValue('leadID', e.target.value)
                         }}
                         value={formik.values.leadID} options={leads} optionLabel="name" optionValue='leadID' placeholder="Select Lead" className="w-full mb-3" />
+                    {formik.errors.leadID && <Message severity="error" text="Lead is required" />}
+
 
                     <label htmlFor="description" className="block text-900 font-medium mb-2">Description</label>
                     <Editor

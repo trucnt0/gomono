@@ -71,7 +71,7 @@ export default () => {
                 <ul className='nav'>
                     {navs.map((n, i) => {
                         return (
-                            <NavLink className='nav-item' to={n.path}>
+                            <NavLink key={i} className='nav-item' to={n.path}>
                                 {n.icon} <span>{n.label}</span>
                             </NavLink>
                         )

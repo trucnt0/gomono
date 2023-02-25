@@ -12,7 +12,7 @@ export interface ProjectModel {
     }
 }
 
-export interface NewProjectModel {
+export interface ProjectDetailModel {
     name?: string
     description?: string
     isActive?: boolean
