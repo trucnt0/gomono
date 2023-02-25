@@ -8,18 +8,19 @@ import (
 )
 
 type Base struct {
-	ID        uuid.UUID `json:"id"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID          uuid.UUID `json:"id"`
+	CreatedDate time.Time `json:"createdDate"`
+	UpdatedDate time.Time `json:"updatedDate"`
 }
 
 func (base *Base) BeforeCreate(tx *gorm.DB) (err error) {
 	base.ID = uuid.New()
-	base.CreatedAt = time.Now().UTC()
+	base.CreatedDate = time.Now().UTC()
+	base.UpdatedDate = time.Now().UTC()
 	return
 }
 
 func (base *Base) BeforeUpdate(tx *gorm.DB) (err error) {
-	base.UpdatedAt = time.Now().UTC()
+	base.UpdatedDate = time.Now().UTC()
 	return
 }

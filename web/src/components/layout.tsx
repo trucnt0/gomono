@@ -1,14 +1,20 @@
 import 'react-toastify/dist/ReactToastify.css'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, createContext, useEffect, useRef } from 'react'
 import { TOKEN, useAuth } from '../pages/auth-provider'
 import { Button } from 'primereact/button'
 import { Avatar } from 'primereact/avatar'
 import { Message } from 'primereact/message'
+import { Toast } from 'primereact/toast'
 import LocalStorageHelper from '../utils/localstorage-helper'
 import { IoPieChart, IoPower } from 'react-icons/io5'
 
-const navs: MenuItem[] = [
+// const LayoutContext = createContext<{
+//     showSuccess: (message: string) => void
+//     showError: (error: string) => void
+// }>()
+
+const menus: MenuItem[] = [
     {
         label: 'Dashboard',
         path: '/',
@@ -18,29 +24,7 @@ const navs: MenuItem[] = [
         label: 'Projects',
         path: '/projects',
         icon: <IoPower />
-    },
-    // {
-    //     label: 'Settings',
-    //     path: '/settings',
-    //     icon: <FiSettings />
-    // },
-    // {
-    //     label: 'FAQ',
-    //     path: '/faq',
-    //     icon: <FiSlack />,
-    //     items: [
-    //         {
-    //             label: 'Contribute',
-    //             path: 'contribute',
-    //             icon: <FiArrowRight />
-    //         },
-    //         {
-    //             label: 'License',
-    //             path: 'license',
-    //             icon: <FiArrowRight />
-    //         },
-    //     ]
-    // },
+    }
 ]
 
 interface MenuItem {
@@ -51,7 +35,7 @@ interface MenuItem {
 }
 
 export default () => {
-
+    const toast = useRef<any>(null)
     const { user, refreshUser } = useAuth()
     const navigate = useNavigate()
 
@@ -69,7 +53,7 @@ export default () => {
             <nav className='sidebar'>
                 <div className="brand">GOMONO</div>
                 <ul className='nav'>
-                    {navs.map((n, i) => {
+                    {menus.map((n, i) => {
                         return (
                             <NavLink key={i} className='nav-item' to={n.path}>
                                 {n.icon} <span>{n.label}</span>
@@ -94,6 +78,7 @@ export default () => {
                     <Outlet />
                 </main>
             </div>
+            <Toast ref={toast} />
         </div>
     )
 }

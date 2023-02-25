@@ -37,7 +37,6 @@ function Projects() {
         },
         validationSchema: projectSchema,
         onSubmit: async (values) => {
-            console.log(values)
             if (!!values.id) {
                 await httpClient.put(`api/projects/${values.id}`, values)
             }
@@ -114,6 +113,8 @@ function Projects() {
                     <Column sortable filter field="description" header="Description"></Column>
                     <Column sortable filter field="lead" header="Lead" body={leadTemplate}></Column>
                     <Column sortable filter field="isActive" header="Status" body={statusTemplate} style={{ width: 80, textAlign: "center" }}></Column>
+                    <Column sortable filter field="createdDate" header="Created Date"></Column>
+                    <Column sortable filter field="updatedDate" header="Updated Date"></Column>
                     <Column style={{ width: 80, textAlign: "center" }} body={editTemplate}></Column>
                 </DataTable>
             </div>

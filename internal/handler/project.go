@@ -10,7 +10,7 @@ import (
 	"github.com/trucnt0/gomono/pkg/database"
 )
 
-type projectModel struct {
+type CreateOrUpdateProject struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	LeadID      uuid.UUID `json:"leadID"`
@@ -32,7 +32,7 @@ func UpdateProject(c *fiber.Ctx) error {
 		return c.SendStatus(http.StatusBadRequest)
 	}
 
-	model := new(projectModel)
+	model := new(CreateOrUpdateProject)
 	if err := c.BodyParser(model); err != nil {
 		return c.SendStatus(http.StatusBadRequest)
 	}
@@ -53,7 +53,7 @@ func UpdateProject(c *fiber.Ctx) error {
 }
 
 func CreateProject(c *fiber.Ctx) error {
-	model := new(projectModel)
+	model := new(CreateOrUpdateProject)
 	if err := c.BodyParser(model); err != nil {
 		return err
 	}

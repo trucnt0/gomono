@@ -5,18 +5,13 @@ export interface ProjectModel {
     leadID?: string
     leadName?: string
     isActive?: boolean
+    createdDate?: Date
+    updatedDate?: Date
     lead?: {
         leadID: string
         firstName: string
         lastName: string
     }
-}
-
-export interface ProjectDetailModel {
-    name?: string
-    description?: string
-    isActive?: boolean
-    leadID?: string
 }
 
 export interface LeadModel {
