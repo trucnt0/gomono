@@ -19,7 +19,7 @@ type CreateOrUpdateProject struct {
 
 func GetProjects(c *fiber.Ctx) error {
 	var projects []entity.Project
-	res := database.Ctx.Order("created_at DESC").Preload("Lead").Find(&projects)
+	res := database.Ctx.Order("created_date DESC").Preload("Lead").Find(&projects)
 	if res.Error != nil {
 		return res.Error
 	}
