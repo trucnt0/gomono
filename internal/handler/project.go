@@ -52,6 +52,22 @@ func UpdateProject(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(project)
 }
 
+func DeleteProject(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	project := new(entity.Project)
+	res := database.Ctx.Where("id = ?", id).Find(&project)
+	if res.Error != nil {
+		return res.Error
+	}
+
+	database.Ctx.Delete(project)
+
+	return c.SendStatus(http.StatusOK)
+}
 func CreateProject(c *fiber.Ctx) error {
 	model := new(CreateOrUpdateProject)
 	if err := c.BodyParser(model); err != nil {

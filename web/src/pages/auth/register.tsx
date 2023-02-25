@@ -1,13 +1,14 @@
 import React, { FC, useEffect, useState } from 'react'
 import { FiUserPlus } from 'react-icons/fi'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import httpClient from '../../utils/http-client'
+import { useToast } from '../toast-provider'
 
 const Register: FC = () => {
     const navigate = useNavigate()
     const [searchParams, setSearchParams] = useSearchParams()
     const [from, setFrom] = useState<any>()
+    const toast = useToast()
 
     useEffect(() => {
         const from = searchParams.get('from')

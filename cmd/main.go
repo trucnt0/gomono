@@ -44,8 +44,9 @@ func main() {
 
 	// Projects
 	app.Get("/api/projects", handler.GetProjects)
-	app.Put("/api/projects/:id", handler.UpdateProject)
 	app.Post("/api/projects", handler.CreateProject)
+	app.Put("/api/projects/:id", handler.UpdateProject)
+	app.Delete("/api/projects/:id", handler.DeleteProject)
 
 	// Users
 	app.Post("api/users", handler.CreateUser)

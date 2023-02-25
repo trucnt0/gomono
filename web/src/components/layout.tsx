@@ -1,6 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { ReactNode, createContext, useEffect, useRef } from 'react'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { ReactNode, useEffect, useRef } from 'react'
 import { TOKEN, useAuth } from '../pages/auth-provider'
 import { Button } from 'primereact/button'
 import { Avatar } from 'primereact/avatar'
@@ -8,11 +8,7 @@ import { Message } from 'primereact/message'
 import { Toast } from 'primereact/toast'
 import LocalStorageHelper from '../utils/localstorage-helper'
 import { IoPieChart, IoPower } from 'react-icons/io5'
-
-// const LayoutContext = createContext<{
-//     showSuccess: (message: string) => void
-//     showError: (error: string) => void
-// }>()
+import { ConfirmDialog } from 'primereact/confirmdialog'
 
 const menus: MenuItem[] = [
     {
@@ -79,6 +75,7 @@ export default () => {
                 </main>
             </div>
             <Toast ref={toast} />
+            <ConfirmDialog />
         </div>
     )
 }
