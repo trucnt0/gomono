@@ -1,4 +1,3 @@
-import 'react-toastify/dist/ReactToastify.css'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { ReactNode, useEffect, useRef } from 'react'
 import { TOKEN, useAuth } from '../pages/auth-provider'
