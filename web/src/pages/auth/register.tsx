@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react'
 import { FiUserPlus } from 'react-icons/fi'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import httpClient from '../../utils/http-client'
-import { useToast } from '../toast-provider'
+import httpClient from '@/utils/http-client'
+import { useToast } from '@/pages/toast-provider'
 
 const Register: FC = () => {
     const navigate = useNavigate()

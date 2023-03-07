@@ -1,25 +1,32 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { ReactNode, useEffect, useRef } from 'react'
+import { ReactNode, useCallback, useEffect, useInsertionEffect, useRef, useState } from 'react'
 import { TOKEN, useAuth } from '../pages/auth-provider'
 import { Button } from 'primereact/button'
 import { Avatar } from 'primereact/avatar'
-import { Message } from 'primereact/message'
 import { Toast } from 'primereact/toast'
-import LocalStorageHelper from '../utils/localstorage-helper'
-import { IoPieChart, IoPower } from 'react-icons/io5'
+import { IoApps, IoBarChart, IoSettings } from 'react-icons/io5'
 import { ConfirmDialog } from 'primereact/confirmdialog'
+import { AutoComplete } from 'primereact/autocomplete'
+import { ProjectModel } from '@/models'
+import projectService from '@/services/project-service'
+import LocalStorageHelper from '@/utils/localstorage-helper'
 
 const menus: MenuItem[] = [
     {
         label: 'Dashboard',
         path: '/',
-        icon: <IoPieChart />
+        icon: <IoBarChart size={22} />
     },
     {
         label: 'Projects',
         path: '/projects',
-        icon: <IoPower />
-    }
+        icon: <IoApps size={22} />
+    },
+    {
+        label: 'Setting',
+        path: '/setting',
+        icon: <IoSettings size={22} />
+    },
 ]
 
 interface MenuItem {
@@ -31,12 +38,21 @@ interface MenuItem {
 
 export default () => {
     const toast = useRef<any>(null)
+    const [searchResult, setSearchResult] = useState<ProjectModel[]>([])
+    const [searchText, setSearchText] = useState("")
+    const [searchItem, setSearchItem] = useState<any>()
     const { user, refreshUser } = useAuth()
     const navigate = useNavigate()
 
     useEffect(() => {
         refreshUser()
     }, [])
+
+    async function handleSearch(e: any) {
+        const query = e.query
+        const result = await projectService.getProjects(query)
+        setSearchResult(result)
+    }
 
     function logout() {
         LocalStorageHelper.remove(TOKEN)
@@ -63,7 +79,16 @@ export default () => {
             <div className='right-content'>
                 <nav className="topbar">
                     <div>
-                        <Message severity="warn" text="Welcome to GOMONO! Searchbar comming soon..." />
+                        <AutoComplete
+                            field='name'
+                            suggestions={searchResult}
+                            completeMethod={handleSearch}
+                            value={searchText}
+                            onChange={e => setSearchText(e.value)}
+                            onSelect={e => setSearchItem(e.value)}
+                            inputStyle={{ width: 350 }}
+                            placeholder='Search project...'
+                        />
                     </div>
                     <div className='profile'>
                         <Avatar label={user?.name?.substring(0, 2)?.toUpperCase()} size='large' shape="circle" />

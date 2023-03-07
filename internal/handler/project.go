@@ -19,7 +19,18 @@ type CreateOrUpdateProject struct {
 
 func GetProjects(c *fiber.Ctx) error {
 	var projects []entity.Project
-	res := database.Ctx.Order("created_date DESC").Preload("Lead").Find(&projects)
+	var search = c.Query("s")
+
+	fmt.Printf("Search = %d\n", len(search))
+
+	query := database.Ctx.Order("created_date DESC").Preload("Lead")
+
+	if len(search) != 0 {
+		query = query.Where("name like ?", fmt.Sprintf("%%%s%%", search))
+	}
+
+	res := query.Find(&projects)
+
 	if res.Error != nil {
 		return res.Error
 	}
@@ -68,6 +79,7 @@ func DeleteProject(c *fiber.Ctx) error {
 
 	return c.SendStatus(http.StatusOK)
 }
+
 func CreateProject(c *fiber.Ctx) error {
 	model := new(CreateOrUpdateProject)
 	if err := c.BodyParser(model); err != nil {

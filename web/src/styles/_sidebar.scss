@@ -5,6 +5,8 @@ $padding-y: 18px;
     height: 100vh;
     width: 300px;
     display: flex;
+    flex-grow: 0;
+    flex-shrink: 0;
     flex-direction: column;
     background-color: var(--primary-color);
     color: var(--primary-color-text);
@@ -25,7 +27,7 @@ $padding-y: 18px;
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 10px;
             padding: $padding-y $padding-x;
             color: var(--primary-color-text);
             

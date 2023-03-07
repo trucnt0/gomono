@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Chart } from 'primereact/chart'
-import Page from '../../components/page'
+import Page from '@/components/page'
+import { IoBarChart } from 'react-icons/io5'
 
 function Dashboard() {
 
@@ -95,7 +96,7 @@ function Dashboard() {
 
 
     return (
-        <Page title='Dashboard' subTitle='Project & task allocation tracking'>
+        <Page icon={<IoBarChart />} title='Dashboard' subTitle='Project & task allocation tracking'>
             <div className='flex flex-column gap-3'>
                 <div className="grid">
                     <div className="col-12 md:col-6 lg:col-3">

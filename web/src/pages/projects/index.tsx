@@ -4,20 +4,20 @@ import Page from '../../components/page'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { LeadModel, ProjectModel } from '../../models'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Dialog } from 'primereact/dialog'
-import { IoCheckmarkCircle } from 'react-icons/io5'
+import { IoApps, IoCheckmarkCircle } from 'react-icons/io5'
 import { Button } from 'primereact/button'
 import { InputText } from 'primereact/inputtext'
 import { Checkbox } from 'primereact/checkbox'
 import { Editor } from 'primereact/editor'
 import { Dropdown } from 'primereact/dropdown'
-import { Message } from 'primereact/message'
 import { confirmDialog } from 'primereact/confirmdialog'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import * as dayjs from 'dayjs'
-import { useToast } from '../toast-provider'
+import { useToast } from '@/pages/toast-provider'
+import projectService from '@/services/project-service'
 
 const projectSchema = yup.object({
     name: yup.string().required(),
@@ -30,6 +30,7 @@ function Projects() {
     const [leads, setLeads] = useState<LeadModel[]>([])
     const [showPopup, setShowPopup] = useState(false)
     const toast = useToast()
+    const dt = useRef<any>(null)
 
     const formik = useFormik({
         initialValues: {
@@ -60,7 +61,7 @@ function Projects() {
     }, [])
 
     const loadProjects = async () => {
-        const projects = await httpClient.get('api/projects')
+        const projects = await projectService.getProjects()
         setProjects(projects)
     }
 
@@ -96,6 +97,10 @@ function Projects() {
         })
     }
 
+    const handleExport = (selectionOnly: boolean) => {
+        dt.current.exportCSV({ selectionOnly })
+    }
+
     const updatedDateTemplate = (p: ProjectModel) => formatDate(p.updatedDate)
 
     const createdDateTemplate = (p: ProjectModel) => formatDate(p.createdDate)
@@ -126,36 +131,42 @@ function Projects() {
                 }}
                 icon='pi pi-plus'
                 label='Create'
-            >
-            </Button>
+            />
+            <Button
+                severity="success"
+                icon="pi pi-send"
+                label='Export'
+                onClick={() => handleExport(false)}
+                data-pr-tooltip="CSV"
+            />
         </div>
     )
 
     return (
         <Page
+            icon={<IoApps />}
             title="Projects Management"
             subTitle="Manage your active projects and tracking the release progress"
             commands={commands}
         >
-            <div className="flex flex-column gap-3">
-                <DataTable
-                    paginator
-                    stripedRows
-                    size='small'
-                    rows={10}
-                    value={projects}
-                    rowsPerPageOptions={[5, 10, 25, 50]}
-                    tableStyle={{ minWidth: '50rem' }}
-                >
-                    <Column sortable filter field="name" header="Name"></Column>
-                    <Column sortable filter field="description" header="Description"></Column>
-                    <Column sortable filter field="lead" header="Lead" body={leadTemplate}></Column>
-                    <Column sortable filter field="isActive" header="Status" body={statusTemplate} style={{ width: 80, textAlign: "center" }}></Column>
-                    <Column sortable filter field="createdDate" header="Created Date" body={createdDateTemplate}></Column>
-                    <Column sortable filter field="updatedDate" header="Updated Date" body={updatedDateTemplate}></Column>
-                    <Column style={{ width: 80, textAlign: "center" }} body={commandTemplate}></Column>
-                </DataTable>
-            </div>
+            <DataTable
+                ref={dt}
+                paginator
+                stripedRows
+                size='small'
+                rows={10}
+                value={projects}
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                tableStyle={{ minWidth: '50rem' }}
+            >
+                <Column sortable filter field="name" header="Name"></Column>
+                <Column sortable filter field="description" header="Description"></Column>
+                <Column sortable filter field="lead" header="Lead" body={leadTemplate}></Column>
+                <Column sortable filter field="isActive" header="Status" body={statusTemplate} style={{ width: 80, textAlign: "center" }}></Column>
+                <Column sortable filter field="createdDate" header="Created Date" body={createdDateTemplate}></Column>
+                <Column sortable filter field="updatedDate" header="Updated Date" body={updatedDateTemplate}></Column>
+                <Column style={{ width: 80, textAlign: "center" }} body={commandTemplate}></Column>
+            </DataTable>
 
             <Dialog header="Project Details" visible={showPopup} style={{ width: '30vw' }} onHide={() => setShowPopup(false)}>
                 <form onSubmit={formik.handleSubmit}>

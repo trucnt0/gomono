@@ -14,6 +14,13 @@ export interface ProjectModel {
     }
 }
 
+export interface TaskModel {
+    id?: string
+    title: string
+    description: string
+
+}
+
 export interface LeadModel {
     name: string
     id?: string
