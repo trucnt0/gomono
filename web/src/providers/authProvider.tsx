@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useLocation, Navigate } from 'react-router-dom'
-import httpClient from '../utils/http-client'
-import LocalStorageHelper from '../utils/localstorage-helper'
+import httpClient from '../utils/httpClient'
+import StorageHelper from '../utils/storageHelper'
 import jwtDecode from 'jwt-decode'
 
 export interface AuthCallbackArgs {
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const signin = async (username: string, password: string, callback: CallbackFunction) => {
         try {
             const { token, refreshToken } = await httpClient.post<AuthRequest, AuthResponse>('api/login', { username, password })
-            LocalStorageHelper.set(TOKEN, token)
+            StorageHelper.set(TOKEN, token)
             setUser(jwtDecode<UserClaims>(token))
             callback({ token, refreshToken })
         }
@@ -57,12 +57,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const signout = (callback: CallbackFunction) => {
-        LocalStorageHelper.remove(TOKEN)
+        StorageHelper.remove(TOKEN)
         callback({})
     }
 
     const refreshUser = () => {
-        const token = LocalStorageHelper.get(TOKEN)
+        const token = StorageHelper.get(TOKEN)
         setUser(jwtDecode<UserClaims>(token!))
     }
 
@@ -76,7 +76,7 @@ export function useAuth() {
 }
 
 export function RequireAuth({ children }: { children: JSX.Element }) {
-    const token = LocalStorageHelper.get(TOKEN)
+    const token = StorageHelper.get(TOKEN)
     const location = useLocation()
 
     if (!token) {

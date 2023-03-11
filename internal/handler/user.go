@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"github.com/trucnt0/gomono/internal/entity"
-	"github.com/trucnt0/gomono/pkg/database"
+	"github.com/trucnt0/gomono/pkg/db"
 )
 
 type createUserModel struct {
@@ -39,7 +39,7 @@ func CreateUser(c *fiber.Ctx) error {
 		Email:     newUser.Email,
 	}
 
-	result := database.Ctx.Create(user)
+	result := db.Ctx.Create(user)
 	if result.Error != nil {
 		return c.Status(http.StatusBadRequest).JSON(result.Error)
 	}
@@ -49,7 +49,7 @@ func CreateUser(c *fiber.Ctx) error {
 
 func GetUsers(c *fiber.Ctx) error {
 	var users []entity.User
-	res := database.Ctx.Find(&users)
+	res := db.Ctx.Find(&users)
 	if res.Error != nil {
 		return c.Status(http.StatusBadRequest).JSON(res.Error)
 	}
@@ -70,7 +70,7 @@ func GetUsers(c *fiber.Ctx) error {
 
 func DeleteUser(c *fiber.Ctx) error {
 	userId := c.Params("id")
-	res := database.Ctx.Where("id = ?", userId).Delete(&entity.User{})
+	res := db.Ctx.Where("id = ?", userId).Delete(&entity.User{})
 	if res.Error != nil {
 		return c.Status(http.StatusBadRequest).JSON(res.Error)
 	}

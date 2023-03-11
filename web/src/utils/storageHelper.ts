@@ -1,4 +1,4 @@
-class LocalStorageHelper {
+class StorageHelper {
     static get(key: string) {
         return localStorage.getItem(key)
     }
@@ -12,4 +12,4 @@ class LocalStorageHelper {
     }
 }
 
-export default LocalStorageHelper
+export default StorageHelper

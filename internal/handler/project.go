@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/trucnt0/gomono/internal/entity"
-	"github.com/trucnt0/gomono/pkg/database"
+	"github.com/trucnt0/gomono/pkg/db"
 )
 
 type CreateOrUpdateProject struct {
@@ -23,7 +23,7 @@ func GetProjects(c *fiber.Ctx) error {
 
 	fmt.Printf("Search = %d\n", len(search))
 
-	query := database.Ctx.Order("created_date DESC").Preload("Lead")
+	query := db.Ctx.Order("created_date DESC").Preload("Lead")
 
 	if len(search) != 0 {
 		query = query.Where("name like ?", fmt.Sprintf("%%%s%%", search))
@@ -49,7 +49,7 @@ func UpdateProject(c *fiber.Ctx) error {
 	}
 
 	project := new(entity.Project)
-	res := database.Ctx.Where("id = ?", id).Find(&project)
+	res := db.Ctx.Where("id = ?", id).Find(&project)
 	if res.Error != nil {
 		return res.Error
 	}
@@ -58,7 +58,7 @@ func UpdateProject(c *fiber.Ctx) error {
 	project.Name = model.Name
 	project.Description = model.Description
 	project.LeadID = model.LeadID
-	database.Ctx.Save(&project)
+	db.Ctx.Save(&project)
 
 	return c.Status(http.StatusOK).JSON(project)
 }
@@ -70,12 +70,12 @@ func DeleteProject(c *fiber.Ctx) error {
 	}
 
 	project := new(entity.Project)
-	res := database.Ctx.Where("id = ?", id).Find(&project)
+	res := db.Ctx.Where("id = ?", id).Find(&project)
 	if res.Error != nil {
 		return res.Error
 	}
 
-	database.Ctx.Delete(project)
+	db.Ctx.Delete(project)
 
 	return c.SendStatus(http.StatusOK)
 }
@@ -98,7 +98,7 @@ func CreateProject(c *fiber.Ctx) error {
 		LeadID:      model.LeadID,
 		IsActive:    model.IsActive,
 	}
-	result := database.Ctx.Create(project)
+	result := db.Ctx.Create(project)
 	if result.Error != nil {
 		return c.Status(http.StatusInternalServerError).SendString("Could not create project")
 	}
@@ -107,6 +107,6 @@ func CreateProject(c *fiber.Ctx) error {
 
 func getLead(id uuid.UUID) *entity.User {
 	lead := new(entity.User)
-	database.Ctx.First(&lead, id)
+	db.Ctx.First(&lead, id)
 	return lead
 }

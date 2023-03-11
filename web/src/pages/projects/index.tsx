@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import httpClient from '../../utils/http-client'
+import httpClient from '../../utils/httpClient'
 import Page from '../../components/page'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
@@ -16,8 +16,8 @@ import { confirmDialog } from 'primereact/confirmdialog'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import * as dayjs from 'dayjs'
-import { useToast } from '@/pages/toast-provider'
-import projectService from '@/services/project-service'
+import projectService from '@/services/projectService'
+import { useToast } from '@/providers/toastProvider'
 
 const projectSchema = yup.object({
     name: yup.string().required(),

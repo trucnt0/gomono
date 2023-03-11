@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { ReactNode, useCallback, useEffect, useInsertionEffect, useRef, useState } from 'react'
-import { TOKEN, useAuth } from '../pages/auth-provider'
+import { TOKEN, useAuth } from '../providers/authProvider'
 import { Button } from 'primereact/button'
 import { Avatar } from 'primereact/avatar'
 import { Toast } from 'primereact/toast'
@@ -8,8 +8,8 @@ import { IoApps, IoBarChart, IoSettings } from 'react-icons/io5'
 import { ConfirmDialog } from 'primereact/confirmdialog'
 import { AutoComplete } from 'primereact/autocomplete'
 import { ProjectModel } from '@/models'
-import projectService from '@/services/project-service'
-import LocalStorageHelper from '@/utils/localstorage-helper'
+import projectService from '@/services/projectService'
+import StorageHelper from '@/utils/storageHelper'
 
 const menus: MenuItem[] = [
     {
@@ -55,7 +55,7 @@ export default () => {
     }
 
     function logout() {
-        LocalStorageHelper.remove(TOKEN)
+        StorageHelper.remove(TOKEN)
         navigate('/login')
     }
 

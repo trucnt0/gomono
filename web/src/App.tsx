@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom"
-import { AuthProvider, RequireAuth } from './pages/auth-provider'
-import { ToastProvider } from './pages/toast-provider'
-import Layout from './components/layout'
-import Register from './pages/auth/register'
-import Projects from './pages/projects'
-import Login from './pages/auth/login'
-import Dashboard from './pages/dashboard'
-import Setting from './pages/setting'
+import { AuthProvider, RequireAuth } from './providers/authProvider'
+import Layout from '@/components/layout'
+import Register from '@/pages/auth/register'
+import Projects from '@/pages/projects'
+import Login from '@/pages/auth/login'
+import Dashboard from '@/pages/dashboard'
+import Setting from '@/pages/setting'
+import { ToastProvider } from '@/providers/toastProvider'
 
 function App() {
   return (

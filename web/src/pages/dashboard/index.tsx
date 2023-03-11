@@ -2,38 +2,22 @@ import React, { useState, useEffect } from 'react'
 import { Chart } from 'primereact/chart'
 import Page from '@/components/page'
 import { IoBarChart } from 'react-icons/io5'
+import httpClient from '@/utils/httpClient'
+import { ProjectByLead } from './projectByLead'
 
 function Dashboard() {
-
     const [chartData, setChartData] = useState({})
     const [chartOptions, setChartOptions] = useState({})
 
-    const [chartData2, setChartData2] = useState({})
-    const [chartOptions2, setChartOptions2] = useState({})
-
     useEffect(() => {
-
+        loadProjectCountByLead()
     }, [])
 
-    useEffect(() => {
-        const documentStyle = getComputedStyle(document.documentElement)
+    const loadProjectCountByLead = async () => {
+        const result = await httpClient.get<ProjectByLead[]>("api/reports/project-count-by-lead")
         const data = {
-            labels: ['Uyen', 'Truc', 'Davlid'],
-            datasets: [
-                {
-                    data: [540, 325, 702],
-                    backgroundColor: [
-                        documentStyle.getPropertyValue('--blue-500'),
-                        documentStyle.getPropertyValue('--yellow-500'),
-                        documentStyle.getPropertyValue('--green-500')
-                    ],
-                    hoverBackgroundColor: [
-                        documentStyle.getPropertyValue('--blue-400'),
-                        documentStyle.getPropertyValue('--yellow-400'),
-                        documentStyle.getPropertyValue('--green-400')
-                    ]
-                }
-            ]
+            labels: result.map(r => r.fullName),
+            datasets: [{ data: result.map(r => r.count) }]
         }
         const options = {
             plugins: {
@@ -47,52 +31,7 @@ function Dashboard() {
 
         setChartData(data)
         setChartOptions(options)
-
-        const textColor = documentStyle.getPropertyValue('--text-color')
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
-        const data2 = {
-            labels: ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
-            datasets: [
-                {
-                    label: 'My First dataset',
-                    borderColor: documentStyle.getPropertyValue('--bluegray-400'),
-                    pointBackgroundColor: documentStyle.getPropertyValue('--bluegray-400'),
-                    pointBorderColor: documentStyle.getPropertyValue('--bluegray-400'),
-                    pointHoverBackgroundColor: textColor,
-                    pointHoverBorderColor: documentStyle.getPropertyValue('--bluegray-400'),
-                    data: [65, 59, 90, 81, 56, 55, 40]
-                },
-                {
-                    label: 'My Second dataset',
-                    borderColor: documentStyle.getPropertyValue('--pink-400'),
-                    pointBackgroundColor: documentStyle.getPropertyValue('--pink-400'),
-                    pointBorderColor: documentStyle.getPropertyValue('--pink-400'),
-                    pointHoverBackgroundColor: textColor,
-                    pointHoverBorderColor: documentStyle.getPropertyValue('--pink-400'),
-                    data: [28, 48, 40, 19, 96, 27, 100]
-                }
-            ]
-        }
-        const options2 = {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            },
-            scales: {
-                r: {
-                    grid: {
-                        color: textColorSecondary
-                    }
-                }
-            }
-        }
-
-        setChartData2(data2)
-        setChartOptions2(options2)
-    }, [])
+    }
 
 
     return (
@@ -164,9 +103,6 @@ function Dashboard() {
                 <div className='flex gap-3'>
                     <div className='surface-0 shadow-2 p-3 border-1 border-50 border-round'>
                         <Chart type="pie" data={chartData} options={chartOptions} className="w-full md:w-30rem" />
-                    </div>
-                    <div className='surface-0 shadow-2 p-3 border-1 border-50 border-round'>
-                        <Chart type="radar" data={chartData2} options={chartOptions2} className="w-full md:w-30rem" />
                     </div>
                 </div>
             </div>

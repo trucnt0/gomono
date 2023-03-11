@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"github.com/trucnt0/gomono/internal/entity"
-	"github.com/trucnt0/gomono/pkg/database"
+	"github.com/trucnt0/gomono/pkg/db"
 )
 
 type leadModel struct {
@@ -17,7 +17,7 @@ type leadModel struct {
 
 func GetLeads(c *fiber.Ctx) error {
 	var users []entity.User
-	database.Ctx.Find(&users)
+	db.Ctx.Find(&users)
 	result := lo.Map(users, func(lead entity.User, index int) leadModel {
 		return leadModel{
 			LeadID: lead.ID,

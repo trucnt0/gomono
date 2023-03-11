@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/trucnt0/gomono/config"
 	"github.com/trucnt0/gomono/internal/handler"
-	"github.com/trucnt0/gomono/pkg/database"
+	"github.com/trucnt0/gomono/pkg/db"
 
 	jwt "github.com/gofiber/jwt/v3"
 )
@@ -20,7 +20,7 @@ func main() {
 	}))
 
 	config.LoadEnv()
-	err := database.Connect()
+	err := db.Connect()
 	if err != nil {
 		log.Fatal("Unable to connect database")
 	}
@@ -56,6 +56,9 @@ func main() {
 	// Roles
 	app.Get("/api/roles", handler.GetRoles)
 	app.Post("/api/roles", handler.CreateRole)
+
+	// Reports
+	app.Get("/api/reports/project-count-by-lead", handler.GetProjectCountByLead)
 
 	log.Fatal(app.Listen(":3001"))
 }

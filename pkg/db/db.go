@@ -1,4 +1,4 @@
-package database
+package db
 
 import (
 	"github.com/trucnt0/gomono/config"

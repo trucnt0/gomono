@@ -4,7 +4,7 @@ import { Password } from 'primereact/password'
 import { Toast } from 'primereact/toast'
 import { Button } from 'primereact/button'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { AuthCallbackArgs, useAuth } from '@/pages/auth-provider'
+import { AuthCallbackArgs, useAuth } from '@/providers/authProvider'
 
 function Login() {
     const navigate = useNavigate()

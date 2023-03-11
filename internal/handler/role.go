@@ -5,7 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/trucnt0/gomono/internal/entity"
-	"github.com/trucnt0/gomono/pkg/database"
+	"github.com/trucnt0/gomono/pkg/db"
 )
 
 type RoleModel struct {
@@ -15,7 +15,7 @@ type RoleModel struct {
 
 func GetRoles(c *fiber.Ctx) error {
 	var roles []entity.Role
-	res := database.Ctx.Find(&roles)
+	res := db.Ctx.Find(&roles)
 	if res.Error != nil {
 		return res.Error
 	}
@@ -32,7 +32,7 @@ func CreateRole(c *fiber.Ctx) error {
 		Name:        req.Name,
 		Description: req.Description,
 	}
-	result := database.Ctx.Create(role)
+	result := db.Ctx.Create(role)
 	if result.Error != nil {
 		return c.Status(http.StatusBadRequest).JSON(result.Error)
 	}

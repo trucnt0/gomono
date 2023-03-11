@@ -5,7 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/trucnt0/gomono/internal/entity"
-	"github.com/trucnt0/gomono/pkg/database"
+	"github.com/trucnt0/gomono/pkg/db"
 	"github.com/trucnt0/gomono/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -35,7 +35,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	user := new(entity.User)
-	database.Ctx.Where("user_name = ?", login.UserName).First(&user)
+	db.Ctx.Where("user_name = ?", login.UserName).First(&user)
 
 	if user == nil {
 		return c.Status(http.StatusUnauthorized).SendString("Account does not exist.")
@@ -73,7 +73,7 @@ func RegisterAccount(c *fiber.Ctx) error {
 		HashedPassword: hashedPassword,
 	}
 
-	result := database.Ctx.Create(&user)
+	result := db.Ctx.Create(&user)
 
 	if result.Error != nil {
 		return result.Error

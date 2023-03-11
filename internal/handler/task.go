@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/trucnt0/gomono/internal/entity"
 	"github.com/trucnt0/gomono/internal/repo"
-	"github.com/trucnt0/gomono/pkg/database"
+	"github.com/trucnt0/gomono/pkg/db"
 )
 
 type CreateTaskModel struct {
@@ -19,7 +19,7 @@ type CreateTaskModel struct {
 
 func GetTasks(c *fiber.Ctx) error {
 	var tasks []entity.Task
-	res := database.Ctx.Find(&tasks)
+	res := db.Ctx.Find(&tasks)
 	if res.Error != nil {
 		return res.Error
 	}
@@ -44,7 +44,7 @@ func CreateTask(c *fiber.Ctx) error {
 		ProjectID:   model.ProjectID,
 		CreatedByID: model.CreatedByID,
 	}
-	res := database.Ctx.Create(task)
+	res := db.Ctx.Create(task)
 	if res.Error != nil {
 		return res.Error
 	}
