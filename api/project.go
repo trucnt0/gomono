@@ -1,4 +1,4 @@
-package handler
+package api
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/trucnt0/gomono/internal/entity"
+	"github.com/trucnt0/gomono/internal/models"
 	"github.com/trucnt0/gomono/pkg/db"
 )
 
@@ -18,7 +18,7 @@ type CreateOrUpdateProject struct {
 }
 
 func GetProjects(c *fiber.Ctx) error {
-	var projects []entity.Project
+	var projects []models.Project
 	var search = c.Query("s")
 
 	fmt.Printf("Search = %d\n", len(search))
@@ -48,7 +48,7 @@ func UpdateProject(c *fiber.Ctx) error {
 		return c.SendStatus(http.StatusBadRequest)
 	}
 
-	project := new(entity.Project)
+	project := new(models.Project)
 	res := db.Ctx.Where("id = ?", id).Find(&project)
 	if res.Error != nil {
 		return res.Error
@@ -69,7 +69,7 @@ func DeleteProject(c *fiber.Ctx) error {
 		return c.SendStatus(http.StatusBadRequest)
 	}
 
-	project := new(entity.Project)
+	project := new(models.Project)
 	res := db.Ctx.Where("id = ?", id).Find(&project)
 	if res.Error != nil {
 		return res.Error
@@ -92,7 +92,7 @@ func CreateProject(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).SendString("Lead does not exist.")
 	}
 
-	project := &entity.Project{
+	project := &models.Project{
 		Name:        model.Name,
 		Description: model.Description,
 		LeadID:      model.LeadID,
@@ -105,8 +105,8 @@ func CreateProject(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(project)
 }
 
-func getLead(id uuid.UUID) *entity.User {
-	lead := new(entity.User)
+func getLead(id uuid.UUID) *models.User {
+	lead := new(models.User)
 	db.Ctx.First(&lead, id)
 	return lead
 }

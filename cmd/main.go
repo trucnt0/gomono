@@ -6,8 +6,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/trucnt0/gomono/api"
 	"github.com/trucnt0/gomono/config"
-	"github.com/trucnt0/gomono/internal/handler"
+	"github.com/trucnt0/gomono/internal/models"
 	"github.com/trucnt0/gomono/pkg/db"
 
 	jwt "github.com/gofiber/jwt/v3"
@@ -21,13 +22,14 @@ func main() {
 
 	config.LoadEnv()
 	err := db.Connect()
+	db.Ctx.AutoMigrate(&models.User{}, &models.Project{})
 	if err != nil {
 		log.Fatal("Unable to connect database")
 	}
 
 	// Auth
-	app.Post("/api/register", handler.RegisterAccount)
-	app.Post("/api/login", handler.Login)
+	app.Post("/api/register", api.RegisterAccount)
+	app.Post("/api/login", api.Login)
 
 	// JWT middleware
 	// Keep this on top to protect below APIs
@@ -36,29 +38,24 @@ func main() {
 	}))
 
 	// Protected APIs
-	// Tasks
-	app.Get("/api/tasks", handler.GetTasks)
 
 	// Leads
-	app.Get("/api/leads", handler.GetLeads)
+	app.Get("/api/leads", api.GetLeads)
 
 	// Projects
-	app.Get("/api/projects", handler.GetProjects)
-	app.Post("/api/projects", handler.CreateProject)
-	app.Put("/api/projects/:id", handler.UpdateProject)
-	app.Delete("/api/projects/:id", handler.DeleteProject)
+	app.Get("/api/projects", api.GetProjects)
+	app.Post("/api/projects", api.CreateProject)
+	app.Put("/api/projects/:id", api.UpdateProject)
+	app.Delete("/api/projects/:id", api.DeleteProject)
 
 	// Users
-	app.Post("api/users", handler.CreateUser)
-	app.Get("api/users", handler.GetUsers)
-	app.Delete("api/users/:id", handler.DeleteUser)
-
-	// Roles
-	app.Get("/api/roles", handler.GetRoles)
-	app.Post("/api/roles", handler.CreateRole)
+	app.Post("api/users", api.CreateUser)
+	app.Get("api/users", api.GetUsers)
+	app.Delete("api/users/:id", api.DeleteUser)
 
 	// Reports
-	app.Get("/api/reports/project-count-by-lead", handler.GetProjectCountByLead)
+	app.Get("/api/reports/project-count-by-lead", api.GetProjectCountByLead)
+	app.Get("/api/reports/stats", api.GetStats)
 
 	log.Fatal(app.Listen(":3001"))
 }

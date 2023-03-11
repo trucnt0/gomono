@@ -1,8 +1,9 @@
-package handler
+package api
 
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/samber/lo"
@@ -18,6 +19,28 @@ type projectCountByUser struct {
 type projectCountResult struct {
 	Count    int    `json:"count"`
 	FullName string `json:"fullName"`
+}
+
+type stats struct {
+	projectCount         int64
+	todayProjectCount    int64
+	activeProjectCount   int64
+	inactiveProjectCount int64
+	userCount            int64
+	todayUserCount       int64
+}
+
+func GetStats(c *fiber.Ctx) error {
+	var stats = new(stats)
+	db.Ctx.Model("projects").Count(&stats.projectCount)
+	//TODO: compare date only
+	db.Ctx.Model("projects").Where("created_date = ?", time.Now().String()).Count(&stats.todayProjectCount)
+	db.Ctx.Model("projects").Where("is_active = 1").Count(&stats.activeProjectCount)
+	db.Ctx.Model("projects").Where("is_active = 0").Count(&stats.inactiveProjectCount)
+	db.Ctx.Model("users").Count(&stats.userCount)
+	//TODO: compare date only
+	db.Ctx.Model("users").Where("created_date = ?", time.Now().String()).Count(&stats.todayUserCount)
+	return c.JSON(stats)
 }
 
 func GetProjectCountByLead(c *fiber.Ctx) error {
