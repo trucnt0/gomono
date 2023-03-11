@@ -12,7 +12,6 @@ const Register: FC = () => {
 
     useEffect(() => {
         const from = searchParams.get('from')
-        console.log(from)
         setFrom(from)
     }, [])
 

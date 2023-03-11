@@ -10,41 +10,44 @@ import (
 	"github.com/trucnt0/gomono/pkg/db"
 )
 
-type projectCountByUser struct {
+type ProjectCountByUser struct {
 	Count     int    `json:"count"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 }
 
-type projectCountResult struct {
+type ProjectCountModel struct {
 	Count    int    `json:"count"`
 	FullName string `json:"fullName"`
 }
 
-type stats struct {
-	projectCount         int64
-	todayProjectCount    int64
-	activeProjectCount   int64
-	inactiveProjectCount int64
-	userCount            int64
-	todayUserCount       int64
+type StatsModel struct {
+	ProjectCount         int64 `json:"projectCount"`
+	TodayProjectCount    int64 `json:"todayProjectCount"`
+	ActiveProjectCount   int64 `json:"activeProjectCount"`
+	InactiveProjectCount int64 `json:"inactiveProjectCount"`
+	UserCount            int64 `json:"userCount"`
+	TodayUserCount       int64 `json:"todayUserCount"`
 }
 
 func GetStats(c *fiber.Ctx) error {
-	var stats = new(stats)
-	db.Ctx.Model("projects").Count(&stats.projectCount)
+	res := &StatsModel{}
+	db.Ctx.Table("projects").Count(&res.ProjectCount)
 	//TODO: compare date only
-	db.Ctx.Model("projects").Where("created_date = ?", time.Now().String()).Count(&stats.todayProjectCount)
-	db.Ctx.Model("projects").Where("is_active = 1").Count(&stats.activeProjectCount)
-	db.Ctx.Model("projects").Where("is_active = 0").Count(&stats.inactiveProjectCount)
-	db.Ctx.Model("users").Count(&stats.userCount)
+	db.Ctx.Table("projects").Where("created_date = ?", time.Now().String()).Count(&res.TodayProjectCount)
+	db.Ctx.Table("projects").Where("is_active = 1").Count(&res.ActiveProjectCount)
+	db.Ctx.Table("projects").Where("is_active = 0").Count(&res.InactiveProjectCount)
+	db.Ctx.Table("users").Count(&res.UserCount)
 	//TODO: compare date only
-	db.Ctx.Model("users").Where("created_date = ?", time.Now().String()).Count(&stats.todayUserCount)
-	return c.JSON(stats)
+	db.Ctx.Table("users").Where("created_date = ?", time.Now().String()).Count(&res.TodayUserCount)
+
+	fmt.Println(res)
+
+	return c.JSON(res)
 }
 
 func GetProjectCountByLead(c *fiber.Ctx) error {
-	var dataset []projectCountByUser
+	var dataset []ProjectCountByUser
 	res := db.Ctx.
 		Table("projects").
 		Joins("join users on projects.lead_id = users.id").
@@ -56,8 +59,8 @@ func GetProjectCountByLead(c *fiber.Ctx) error {
 		return c.SendStatus(http.StatusInternalServerError)
 	}
 
-	result := lo.Map(dataset, func(item projectCountByUser, index int) projectCountResult {
-		return projectCountResult{
+	result := lo.Map(dataset, func(item ProjectCountByUser, index int) ProjectCountModel {
+		return ProjectCountModel{
 			Count:    item.Count,
 			FullName: fmt.Sprintf("%s %s", item.FirstName, item.LastName),
 		}
