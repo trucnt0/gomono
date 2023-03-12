@@ -1,4 +1,4 @@
-package usecase
+package app
 
 import (
 	"fmt"
@@ -34,7 +34,7 @@ type CreateLeadDTO struct {
 	Email     string `json:"email" validate:"required,email"`
 }
 
-type UserUseCase interface {
+type UserService interface {
 	CreateAccount(dto *CreateAccountDTO) (*UserDTO, error)
 	CreateUser(dto *CreateLeadDTO) (*UserDTO, error)
 	GetAll() ([]UserDTO, error)
@@ -42,17 +42,17 @@ type UserUseCase interface {
 	Delete(id uuid.UUID) error
 }
 
-type userUseCaseImpl struct {
+type UserServiceImpl struct {
 	userRepo domain.UserRepository
 }
 
-func NewUserUseCase(userRepo domain.UserRepository) UserUseCase {
-	return &userUseCaseImpl{
+func NewUserService(userRepo domain.UserRepository) UserService {
+	return &UserServiceImpl{
 		userRepo: userRepo,
 	}
 }
 
-func (u *userUseCaseImpl) CreateAccount(dto *CreateAccountDTO) (*UserDTO, error) {
+func (u *UserServiceImpl) CreateAccount(dto *CreateAccountDTO) (*UserDTO, error) {
 
 	// Validation
 	errs := validate.Struct(&dto)
@@ -92,7 +92,7 @@ func (u *userUseCaseImpl) CreateAccount(dto *CreateAccountDTO) (*UserDTO, error)
 	return &UserDTO{ID: user.ID}, nil
 }
 
-func (u *userUseCaseImpl) CreateUser(dto *CreateLeadDTO) (*UserDTO, error) {
+func (u *UserServiceImpl) CreateUser(dto *CreateLeadDTO) (*UserDTO, error) {
 	errs := validate.Struct(&dto)
 	if errs != nil {
 		return nil, errs
@@ -107,7 +107,7 @@ func (u *userUseCaseImpl) CreateUser(dto *CreateLeadDTO) (*UserDTO, error) {
 	return &UserDTO{ID: user.ID}, nil
 }
 
-func (u *userUseCaseImpl) GetAll() ([]UserDTO, error) {
+func (u *UserServiceImpl) GetAll() ([]UserDTO, error) {
 	users, _ := u.userRepo.GetAll()
 	res := lo.Map(users, func(user domain.User, index int) UserDTO {
 		return UserDTO{
@@ -121,7 +121,7 @@ func (u *userUseCaseImpl) GetAll() ([]UserDTO, error) {
 	return res, nil
 }
 
-func (u *userUseCaseImpl) VerifyLogin(userName, password string) (bool, *domain.User, error) {
+func (u *UserServiceImpl) VerifyLogin(userName, password string) (bool, *domain.User, error) {
 	user, err := u.userRepo.GetByUserName(userName)
 	if err != nil {
 		return false, nil, err
@@ -131,7 +131,7 @@ func (u *userUseCaseImpl) VerifyLogin(userName, password string) (bool, *domain.
 	return isMatched, user, nil
 }
 
-func (u *userUseCaseImpl) Delete(id uuid.UUID) error {
+func (u *UserServiceImpl) Delete(id uuid.UUID) error {
 	res := u.userRepo.Delete(id)
 	return res
 }

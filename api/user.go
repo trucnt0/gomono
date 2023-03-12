@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/trucnt0/gomono/internal/usecase"
+	"github.com/trucnt0/gomono/internal/app"
 	"github.com/trucnt0/gomono/pkg/id"
 	"github.com/trucnt0/gomono/pkg/jwt"
 )
@@ -15,21 +15,36 @@ type createUserModel struct {
 	Email     string `json:"email"`
 }
 
-type UserHanlder struct {
-	usecase usecase.UserUseCase
+type loginModel struct {
+	UserName string `json:"userName"`
+	Password string `json:"password"`
 }
 
-func NewUserHandler(uu usecase.UserUseCase) *UserHanlder {
-	return &UserHanlder{usecase: uu}
+type registerModel struct {
+	createUserModel
+	loginModel
 }
 
-func (h *UserHanlder) Create(c *fiber.Ctx) error {
+type tokenModel struct {
+	Token        string `json:"token"`
+	RefreshToken string `json:"refreshToken"`
+}
+
+type UserHandler struct {
+	app app.UserService
+}
+
+func NewUserHandler(uu app.UserService) *UserHandler {
+	return &UserHandler{app: uu}
+}
+
+func (h *UserHandler) Create(c *fiber.Ctx) error {
 	newUser := new(createUserModel)
 	if err := c.BodyParser(newUser); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(err)
 	}
 
-	res, err := h.usecase.CreateUser(&usecase.CreateLeadDTO{
+	res, err := h.app.CreateUser(&app.CreateLeadDTO{
 		FirstName: newUser.FirstName,
 		LastName:  newUser.LastName,
 		Email:     newUser.Email,
@@ -42,18 +57,18 @@ func (h *UserHanlder) Create(c *fiber.Ctx) error {
 	return c.JSON(res)
 }
 
-func (h *UserHanlder) GetAll(c *fiber.Ctx) error {
-	res, _ := h.usecase.GetAll()
+func (h *UserHandler) GetAll(c *fiber.Ctx) error {
+	res, _ := h.app.GetAll()
 	return c.JSON(res)
 }
 
-func (h *UserHanlder) Register(c *fiber.Ctx) error {
+func (h *UserHandler) Register(c *fiber.Ctx) error {
 	acc := new(registerModel)
 	if err := c.BodyParser(acc); err != nil {
 		return err
 	}
 
-	res, err := h.usecase.CreateAccount(&usecase.CreateAccountDTO{
+	res, err := h.app.CreateAccount(&app.CreateAccountDTO{
 		FirstName: acc.FirstName,
 		LastName:  acc.LastName,
 		UserName:  acc.UserName,
@@ -68,13 +83,13 @@ func (h *UserHanlder) Register(c *fiber.Ctx) error {
 	return c.JSON(res)
 }
 
-func (h *UserHanlder) Login(c *fiber.Ctx) error {
+func (h *UserHandler) Login(c *fiber.Ctx) error {
 	login := new(loginModel)
 	if err := c.BodyParser(login); err != nil {
 		return err
 	}
 
-	success, user, err := h.usecase.VerifyLogin(login.UserName, login.Password)
+	success, user, err := h.app.VerifyLogin(login.UserName, login.Password)
 
 	if err != nil {
 		return c.Status(http.StatusUnauthorized).JSON(err)
@@ -92,9 +107,9 @@ func (h *UserHanlder) Login(c *fiber.Ctx) error {
 	})
 }
 
-func (h *UserHanlder) Delete(c *fiber.Ctx) error {
+func (h *UserHandler) Delete(c *fiber.Ctx) error {
 	userId := id.FromString(c.Params("id"))
-	err := h.usecase.Delete(userId)
+	err := h.app.Delete(userId)
 	if err != nil {
 		return c.SendStatus(http.StatusBadRequest)
 	}
