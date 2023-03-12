@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/trucnt0/gomono/internal/models"
+	"github.com/trucnt0/gomono/internal/domain"
 	"github.com/trucnt0/gomono/pkg/db"
 	"github.com/trucnt0/gomono/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
@@ -34,7 +34,7 @@ func Login(c *fiber.Ctx) error {
 		return err
 	}
 
-	user := new(models.User)
+	user := new(domain.User)
 	db.Ctx.Where("user_name = ?", login.UserName).First(&user)
 
 	if user == nil {
@@ -65,7 +65,7 @@ func RegisterAccount(c *fiber.Ctx) error {
 		return err
 	}
 
-	user := &models.User{
+	user := &domain.User{
 		FirstName:      acc.FirstName,
 		LastName:       acc.LastName,
 		Email:          acc.Email,

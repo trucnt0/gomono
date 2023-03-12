@@ -8,7 +8,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/trucnt0/gomono/api"
 	"github.com/trucnt0/gomono/config"
-	"github.com/trucnt0/gomono/internal/models"
+	"github.com/trucnt0/gomono/internal/domain"
+	"github.com/trucnt0/gomono/internal/repository"
+	"github.com/trucnt0/gomono/internal/usecase"
 	"github.com/trucnt0/gomono/pkg/db"
 
 	jwt "github.com/gofiber/jwt/v3"
@@ -22,14 +24,20 @@ func main() {
 
 	config.LoadEnv()
 	err := db.Connect()
-	db.Ctx.AutoMigrate(&models.User{}, &models.Project{})
+	db.Ctx.AutoMigrate(&domain.User{}, &domain.Project{})
 	if err != nil {
 		log.Fatal("Unable to connect database")
 	}
 
+	//TODO: DI using Wire
+	//https://github.com/google/wire/blob/main/README.md
+	userRepo := repository.NewUserRepository(db.Ctx)
+	userUseCase := usecase.NewUserUseCase(userRepo)
+	userHandler := api.NewUserHandler(userUseCase)
+
 	// Auth
-	app.Post("/api/register", api.RegisterAccount)
-	app.Post("/api/login", api.Login)
+	app.Post("/api/register", userHandler.Register)
+	app.Post("/api/login", userHandler.Login)
 
 	// JWT middleware
 	// Keep this on top to protect below APIs
@@ -39,6 +47,11 @@ func main() {
 
 	// Protected APIs
 
+	// Users
+	app.Post("api/users", userHandler.Create)
+	app.Get("api/users", userHandler.GetAll)
+	app.Delete("api/users/:id", userHandler.Delete)
+
 	// Leads
 	app.Get("/api/leads", api.GetLeads)
 
@@ -47,11 +60,6 @@ func main() {
 	app.Post("/api/projects", api.CreateProject)
 	app.Put("/api/projects/:id", api.UpdateProject)
 	app.Delete("/api/projects/:id", api.DeleteProject)
-
-	// Users
-	app.Post("api/users", api.CreateUser)
-	app.Get("api/users", api.GetUsers)
-	app.Delete("api/users/:id", api.DeleteUser)
 
 	// Reports
 	app.Get("/api/reports/project-count-by-lead", api.GetProjectCountByLead)

@@ -7,7 +7,7 @@ import { Toast } from 'primereact/toast'
 import { IoApps, IoBarChart, IoSettings } from 'react-icons/io5'
 import { ConfirmDialog } from 'primereact/confirmdialog'
 import { AutoComplete } from 'primereact/autocomplete'
-import { ProjectModel } from '@/models'
+import { ProjectModel } from '@/domain'
 import projectService from '@/services/projectService'
 import StorageHelper from '@/utils/storageHelper'
 

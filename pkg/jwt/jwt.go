@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/trucnt0/gomono/config"
-	"github.com/trucnt0/gomono/internal/models"
+	"github.com/trucnt0/gomono/internal/domain"
 )
 
 type CustomClaims struct {
@@ -14,7 +14,7 @@ type CustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(user *models.User) (token, refreshToken string) {
+func GenerateToken(user *domain.User) (token, refreshToken string) {
 	tk := jwt.New(jwt.SigningMethodHS256)
 	claims := tk.Claims.(jwt.MapClaims)
 	claims["sub"] = user.ID

@@ -1,14 +1,12 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
-	"github.com/samber/lo"
-	"github.com/trucnt0/gomono/internal/models"
-	"github.com/trucnt0/gomono/pkg/db"
+	"github.com/trucnt0/gomono/internal/usecase"
+	"github.com/trucnt0/gomono/pkg/id"
+	"github.com/trucnt0/gomono/pkg/jwt"
 )
 
 type createUserModel struct {
@@ -17,62 +15,88 @@ type createUserModel struct {
 	Email     string `json:"email"`
 }
 
-type userModel struct {
-	ID        uuid.UUID `json:"id"`
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
-	FullName  string    `json:"fullName"`
-	Email     string    `json:"email"`
-	UserName  string    `json:"userName"`
+type UserHanlder struct {
+	usecase usecase.UserUseCase
 }
 
-// Create a normal user without username & password
-func CreateUser(c *fiber.Ctx) error {
+func NewUserHandler(uu usecase.UserUseCase) *UserHanlder {
+	return &UserHanlder{usecase: uu}
+}
+
+func (h *UserHanlder) Create(c *fiber.Ctx) error {
 	newUser := new(createUserModel)
 	if err := c.BodyParser(newUser); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(err)
 	}
 
-	user := &models.User{
+	res, err := h.usecase.CreateUser(&usecase.CreateLeadDTO{
 		FirstName: newUser.FirstName,
 		LastName:  newUser.LastName,
 		Email:     newUser.Email,
-	}
-
-	result := db.Ctx.Create(user)
-	if result.Error != nil {
-		return c.Status(http.StatusBadRequest).JSON(result.Error)
-	}
-
-	return c.JSON(user)
-}
-
-func GetUsers(c *fiber.Ctx) error {
-	var users []models.User
-	res := db.Ctx.Find(&users)
-	if res.Error != nil {
-		return c.Status(http.StatusBadRequest).JSON(res.Error)
-	}
-
-	result := lo.Map(users, func(u models.User, index int) userModel {
-		return userModel{
-			ID:        u.ID,
-			FirstName: u.FirstName,
-			LastName:  u.LastName,
-			Email:     u.Email,
-			FullName:  fmt.Sprintf("%s %s", u.FirstName, u.LastName),
-			UserName:  u.UserName,
-		}
 	})
 
-	return c.JSON(result)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(err)
+	}
+
+	return c.JSON(res)
 }
 
-func DeleteUser(c *fiber.Ctx) error {
-	userId := c.Params("id")
-	res := db.Ctx.Where("id = ?", userId).Delete(&models.User{})
-	if res.Error != nil {
-		return c.Status(http.StatusBadRequest).JSON(res.Error)
+func (h *UserHanlder) GetAll(c *fiber.Ctx) error {
+	res, _ := h.usecase.GetAll()
+	return c.JSON(res)
+}
+
+func (h *UserHanlder) Register(c *fiber.Ctx) error {
+	acc := new(registerModel)
+	if err := c.BodyParser(acc); err != nil {
+		return err
+	}
+
+	res, err := h.usecase.CreateAccount(&usecase.CreateAccountDTO{
+		FirstName: acc.FirstName,
+		LastName:  acc.LastName,
+		UserName:  acc.UserName,
+		Email:     acc.Email,
+		Password:  acc.Password,
+	})
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(err)
+	}
+
+	return c.JSON(res)
+}
+
+func (h *UserHanlder) Login(c *fiber.Ctx) error {
+	login := new(loginModel)
+	if err := c.BodyParser(login); err != nil {
+		return err
+	}
+
+	success, user, err := h.usecase.VerifyLogin(login.UserName, login.Password)
+
+	if err != nil {
+		return c.Status(http.StatusUnauthorized).JSON(err)
+	}
+
+	if !success {
+		return c.Status(http.StatusUnauthorized).JSON("Invalid credentials")
+	}
+
+	token, refreshToken := jwt.GenerateToken(user)
+
+	return c.Status(http.StatusOK).JSON(&tokenModel{
+		Token:        token,
+		RefreshToken: refreshToken,
+	})
+}
+
+func (h *UserHanlder) Delete(c *fiber.Ctx) error {
+	userId := id.FromString(c.Params("id"))
+	err := h.usecase.Delete(userId)
+	if err != nil {
+		return c.SendStatus(http.StatusBadRequest)
 	}
 	return c.SendStatus(http.StatusOK)
 }

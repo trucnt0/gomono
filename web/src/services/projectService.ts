@@ -1,4 +1,4 @@
-import { ProjectModel } from '@/models'
+import { ProjectModel } from '@/domain'
 import httpClient from '@/utils/httpClient'
 
 export async function getProjects(search?: string): Promise<ProjectModel[]> {
